@@ -1,31 +1,54 @@
-class Calentador:
-    def __init__(self, ) -> None:
+from Calentador import Calentador
+from Liquido import Liquido
+from Material import Material
+from Recipiente import Recipiente
 
-print("\n++++++++++++ Punto 1 ++++++++++++")
-m = 500            #! masa - g
-c = 4.18            #! calor específico - J/g°C
-dt1 = 70             #! cambio de temperatira - °C
-tiempo = 300        #! tiempo - segundos
-v = 220             #! voltaje - v
 
-Q = m*c*dt1          #! energía - J
-
-P = Q/tiempo        #! potencia - W
-
-I = P/v             #! corriente - A
-
-R = v/I             #! resistencia - Ω
-
-print(f"Q = {Q} J")
-print(f"P = {P} W")
-print(f"I = {I} A") 
-print(f"R = {R} Ω")
-
-print("\n++++++++++++ Punto 2 ++++++++++++")
-
-tiempo2 = 1          #! tiempo - segundos
-
-Q = P*tiempo2        #! energía - J
-
-dt2 = Q/(m*c)   #! cambio de temperatura - °C (convert to int)
-print(f"El aumento de la temeratura en {tiempo2} segundos es de {dt2}° C")
+if __name__ == '__main__':
+    
+    agua = Liquido(
+        nombre="Agua",
+        densidad=1, 
+        calor_especifico=4.18,
+    )
+    
+    telgopor = Material(
+        nombre="Telgopor",
+        conductividad_térmica=0.035,
+    )
+    
+    cilindro = Recipiente(
+        altura=6.36619, 
+        diametro=10, 
+        material=telgopor, 
+        espesor_aislante=0.01, 
+        liquido=agua
+    )
+    
+    calentador = Calentador(
+        temperatura_liquido_inicial=30,
+        temperatura_liquido_final=100,
+        temperatura_ambiente=30,
+        tiempo_objetivo=300,
+        recipiente=cilindro,
+        tension=220,
+    )
+    
+    print(agua)
+    print("-"*10)
+    print(telgopor)
+    print("-"*10)
+    print(cilindro)
+    print("-"*10)
+    print(calentador.tp1_a())
+    print("-"*10)
+    print(calentador.tp1_b())
+    print("-"*10)
+    print(calentador.tp2())
+    print("-"*10)
+    print(calentador.tp3())
+    print("-"*10)
+    print(calentador.tp4_a())
+    print("-"*10)
+    print(calentador.tp4_b())
+    print("-"*10)
