@@ -9,7 +9,7 @@ if __name__ == '__main__':
     agua = Liquido(
         nombre="Agua",
         densidad=1, 
-        calor_especifico=4.18,
+        calor_especifico=4.186,
     )
     
     telgopor = Material(
@@ -44,11 +44,15 @@ if __name__ == '__main__':
     print("-"*10)
     print(calentador.tp1_b())
     print("-"*10)
-    print(calentador.tp2())
+    # print(calentador.tp2())
     print("-"*10)
-    print(calentador.tp3())
+    # print(calentador.tp3())
     print("-"*10)
     print(calentador.tp4_a())
     print("-"*10)
     print(calentador.tp4_b())
     print("-"*10)
+    
+    #TODO
+    # No estoy teniendo en cuenta el espesor en el tp3
+    # Tp4 no me sale

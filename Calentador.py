@@ -1,5 +1,5 @@
 from Recipiente import Recipiente
-from Liquido import Liquido
+import matplotlib.pyplot as plt
 
 
 class Calentador:
@@ -64,7 +64,6 @@ class Calentador:
         """
         Graficar el aumento de temperatura del agua en el recipiente sin perdida de calor (lineal).
         """
-        #! Grafica lineal
         temperaturas = []
         temperatura_agua = self.temperatura_liquido_inicial
         for segundo in range(self.tiempo_objetivo):
@@ -77,8 +76,6 @@ class Calentador:
             temperaturas.append(temperatura_agua)
         
         
-        #! Grafica lineal
-        import matplotlib.pyplot as plt
         plt.plot(range(self.tiempo_objetivo), temperaturas)
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -92,14 +89,20 @@ class Calentador:
         
     def tp3(self) -> str:
         """
-        Graficar el aumento de temperatura del agua en el recipiente con perdida de calor y con la potencia original.
+        Graficar el aumento de temperatura del agua. Tener en cuenta:
+        - Perdida de calor.
+        - Usar la potencia original.
+        - Temperatura ambiente.
+        - Superficie del recipiente.
+        - Conductividad térmica del material del recipiente.
+        - Espesor del aislante.
         """
         
-        #! Gráfica no lineal.
         temperaturas = []
         temperatura_agua = self.temperatura_liquido_inicial
         for segundo in range(self.tiempo_objetivo):
             cantidad_calor = self.potencia
+            # cantidad_calor = 2638.370
             masa_agua = self.recipiente.masa_liquido
             calor_especifico_agua = self.recipiente.liquido.calor_especifico
             cambio_temperatura = cantidad_calor / (masa_agua * calor_especifico_agua)
@@ -110,13 +113,11 @@ class Calentador:
             
             temperatura_agua += cambio_temperatura
             temperaturas.append(temperatura_agua)
-            
-        #! Gráfica no lineal
-        import matplotlib.pyplot as plt
+        
         plt.plot(range(self.tiempo_objetivo), temperaturas)
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
-        plt.title("Aumento de temperatura del agua en el recipiente \ncon perdida de calor y potencia original")
+        plt.title(f"TP2: Aumento de temperatura del agua \nTemperatura maxima {temperatura_agua:.3f}")
         plt.grid()
         plt.show()
         return (
@@ -128,10 +129,16 @@ class Calentador:
         """
         Calcular la potencia neceesaria (constante) para alcanzar la temperatura final en el tiempo esperado y con perdida de calor.
         """
+        #! Intento 1: CREO que da un resultado grande 2938.370 W
+        # cantidad_calor = self.recipiente.superficie * self.recipiente.material.conductividad_térmica * (self.temperatura_liquido_final - self.temperatura_ambiente)
+        # potencia_necesaria =  ((self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico * (self.temperatura_liquido_final - self.temperatura_liquido_inicial)) / self.tiempo_objetivo) + cantidad_calor
         
-        cantidad_calor = (self.recipiente.material.conductividad_térmica * (self.recipiente.superficie/self.recipiente.espesor_aislante)) * self.recipiente.masa_liquido * (self.temperatura_liquido_final - self.temperatura_liquido_inicial)
-
-        potencia_necesaria = cantidad_calor / self.tiempo_objetivo
+        #! Intento 2:
+        resistencia_termina = self.recipiente.espesor_aislante / self.recipiente.material.conductividad_térmica
+        diferencia_temperatura = self.temperatura_liquido_final - self.temperatura_ambiente
+        cantidad_calor_perdido = diferencia_temperatura / resistencia_termina
+        potencia_necesaria = ((self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico * (self.temperatura_liquido_final - self.temperatura_liquido_inicial)) / self.tiempo_objetivo) + cantidad_calor_perdido
+        
         
         return (
             f"Tp4: A\n" +
