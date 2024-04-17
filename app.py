@@ -34,6 +34,7 @@ if __name__ == '__main__':
         tension=220,
     )
     
+    
     print(agua)
     print("-"*10)
     print(telgopor)
@@ -44,15 +45,9 @@ if __name__ == '__main__':
     print("-"*10)
     print(calentador.tp1_b())
     print("-"*10)
-    # print(calentador.tp2())
+    print(calentador.tp2())
     print("-"*10)
-    # print(calentador.tp3())
+    print(calentador.tp3())
     print("-"*10)
-    print(calentador.tp4_a())
+    print(calentador.tp4())
     print("-"*10)
-    print(calentador.tp4_b())
-    print("-"*10)
-    
-    #TODO
-    # No estoy teniendo en cuenta el espesor en el tp3
-    # Tp4 no me sale

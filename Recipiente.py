@@ -42,9 +42,10 @@ class Recipiente:
     def __setSuperficie(self) -> float:
         """
         Calcular la superficie total del recipiente.
-        - 2πr(r+h)
+        - 2πrr + 2πrh 
         """
-        return 2 * 3.1416 * (self.diametro/2) * ((self.diametro/2) * self.altura)
+        return 2 * 3.1416 * (self.diametro/2)**2 + 2 * 3.1416 * (self.diametro/2) * self.altura
+    
     
     def __str__(self) -> str:
-        return f"Recipiente: {self.nombre}\nVolumen (cm^3) : {self.volumen:.3f}\nMasa del liquido (g): {self.masa_liquido:.3f}\nSuperficie (cm^2): {self.superficie:.3f}"
+        return f"Recipiente: {self.nombre}\nVolumen (cm^3) : {self.volumen:.2f}\nMasa del liquido (g): {self.masa_liquido:.2f}\nSuperficie (cm^2): {self.superficie:.2f}\nEspesor del aislante (cm): {self.espesor_aislante}"

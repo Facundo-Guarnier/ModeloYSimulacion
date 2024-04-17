@@ -12,4 +12,4 @@ class Liquido:
         self.nombre = nombre
     
     def __str__(self) -> str:
-        return f"Liquido: {self.nombre}\nDensidad (g/cm^3): {self.densidad:.3f}\nCalor especifico (J/g°C): {self.calor_especifico:.3f}"
+        return f"Liquido: {self.nombre}\nDensidad (g/cm^3): {self.densidad:.2f}\nCalor especifico (J/g°C): {self.calor_especifico:.2f}"

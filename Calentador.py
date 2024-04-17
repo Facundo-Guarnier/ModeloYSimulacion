@@ -42,10 +42,10 @@ class Calentador:
         
         return (
             f"Tp1: A\n" +
-            f"Cantidad de calor (Q): {cantidad_calor:.3f} J\n" +
-            f"Potencia: {self.potencia:.3f} W\n" +
-            f"Corriente: {self.potencia/self.tension:.3f} A\n" +
-            f"Resistencia: {self.resistencia:.3f} Ω"
+            f"Cantidad de calor (Q): {cantidad_calor:.2f} J\n" +
+            f"Potencia: {self.potencia:.2f} W\n" +
+            f"Corriente: {self.potencia/self.tension:.2f} A\n" +
+            f"Resistencia: {self.resistencia:.2f} Ω"
         )
 
     def tp1_b(self) -> str:
@@ -57,7 +57,7 @@ class Calentador:
         
         return (
             f"Tp1: B\n" +
-            f"Aumento de temperatura luego de 1s: {cambio_temperatura:.3f} °C"
+            f"Aumento de temperatura luego de 1s: {cambio_temperatura:.2f} °C"
         )
     
     def tp2(self) -> str:
@@ -86,70 +86,59 @@ class Calentador:
             "Tp2 \n" +
             "Gráfica realizada con éxito."
         )
-        
+    
     def tp3(self) -> str:
         """
-        Graficar el aumento de temperatura del agua. Tener en cuenta:
-        - Perdida de calor.
-        - Usar la potencia original.
-        - Temperatura ambiente.
-        - Superficie del recipiente.
-        - Conductividad térmica del material del recipiente.
-        - Espesor del aislante.
+        Calcular la pérdida de calor de nuestro dispositivo, según las especificaciones de diseño. 
+        Calor perdido en Watts/grado Kelvin = Coeficiente de Conductividad Térmica W/m grado Kelvin * Sup/Esp/m
         """
         
-        temperaturas = []
-        temperatura_agua = self.temperatura_liquido_inicial
-        for segundo in range(self.tiempo_objetivo):
-            cantidad_calor = self.potencia
-            # cantidad_calor = 2638.370
-            masa_agua = self.recipiente.masa_liquido
-            calor_especifico_agua = self.recipiente.liquido.calor_especifico
-            cambio_temperatura = cantidad_calor / (masa_agua * calor_especifico_agua)
-            
-            if temperatura_agua > self.temperatura_ambiente:
-                perdida_calor = (temperatura_agua - self.temperatura_ambiente) * self.recipiente.superficie * self.recipiente.material.conductividad_térmica
-                cambio_temperatura -= perdida_calor / (masa_agua * calor_especifico_agua)
-            
-            temperatura_agua += cambio_temperatura
-            temperaturas.append(temperatura_agua)
+        cantidad_calor_perdido =  self.recipiente.material.conductividad_térmica * (self.recipiente.superficie/self.recipiente.espesor_aislante)/self.recipiente.masa_liquido
+
+        return (
+            f"Tp3\n" +
+            f"Cantidad de calor perdido: {cantidad_calor_perdido:.2f} W"
+        )
+    
+    def tp4(self) -> str:
+        """
+        Graficar la temperatura del fluido dentro del calentador sin pérdidas y con pérdidas para cada tick de tiempo, 
+        hasta llegar al tiempo deseado para que el dispositivo cumpla su tarea.
+
+        Para realizar el gráfico con pérdidas, se debe considerar los vatios efectivos entregados al fluido restando al 
+        calor producido por la resistencia, el calor perdido por las paredes del recipiente. Con este calor efectivo se
+        calcula la variación de temperatura del fluido para cada tick de tiempo.
+        """
         
-        plt.plot(range(self.tiempo_objetivo), temperaturas)
+        temperaturas_sin_perdida = []
+        temperaturas_con_perdida = []
+        
+        for segundo in range(self.tiempo_objetivo):
+        
+            #! Sin perdida
+            cambio_temperatura_sin_perdida = (self.potencia * segundo) / (self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico)
+            temperatura_agua_sin_perdida = self.temperatura_liquido_inicial + cambio_temperatura_sin_perdida
+            temperaturas_sin_perdida.append(temperatura_agua_sin_perdida)
+        
+            #! Con perdida
+            calor_perdido =  self.recipiente.material.conductividad_térmica * (self.recipiente.superficie/self.recipiente.espesor_aislante)/self.recipiente.masa_liquido
+        
+            calor_perdido_total = calor_perdido * (temperatura_agua_sin_perdida - self.temperatura_ambiente) * segundo
+            cantidad_calor_efectivo = (self.potencia * segundo) - calor_perdido_total
+            
+            delta_T_efectivo = cantidad_calor_efectivo / (self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico)
+            temperaturas_con_perdida.append(self.temperatura_liquido_inicial + delta_T_efectivo)
+
+        
+        plt.plot(range(self.tiempo_objetivo), temperaturas_sin_perdida, label="Sin perdida", linestyle="-")
+        plt.plot(range(self.tiempo_objetivo), temperaturas_con_perdida, label="Con perdida" , linestyle="-")
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
-        plt.title(f"TP2: Aumento de temperatura del agua \nTemperatura maxima {temperatura_agua:.3f}")
+        plt.title("Aumento de temperatura del agua en el\nrecipiente con/sin perdida de calor.")
         plt.grid()
         plt.show()
         return (
             "Tp3 \n" +
-            "Gráfica realizada con éxito."
-        )
-    
-    def tp4_a(self) -> str:
-        """
-        Calcular la potencia neceesaria (constante) para alcanzar la temperatura final en el tiempo esperado y con perdida de calor.
-        """
-        #! Intento 1: CREO que da un resultado grande 2938.370 W
-        # cantidad_calor = self.recipiente.superficie * self.recipiente.material.conductividad_térmica * (self.temperatura_liquido_final - self.temperatura_ambiente)
-        # potencia_necesaria =  ((self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico * (self.temperatura_liquido_final - self.temperatura_liquido_inicial)) / self.tiempo_objetivo) + cantidad_calor
-        
-        #! Intento 2:
-        resistencia_termina = self.recipiente.espesor_aislante / self.recipiente.material.conductividad_térmica
-        diferencia_temperatura = self.temperatura_liquido_final - self.temperatura_ambiente
-        cantidad_calor_perdido = diferencia_temperatura / resistencia_termina
-        potencia_necesaria = ((self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico * (self.temperatura_liquido_final - self.temperatura_liquido_inicial)) / self.tiempo_objetivo) + cantidad_calor_perdido
-        
-        
-        return (
-            f"Tp4: A\n" +
-            f"Potencia necesaria: {potencia_necesaria:.3f} W"
-        )
-    
-    def tp4_b(self) -> str:
-        """
-        Graficar el aumento de temperatura del agua en el recipiente con perdida de calor y con la potencia necesaria para llegar a la temperatura destino.
-        """
-        return (    
-            "Tp4: B\n" +
-            "Gráfica no realizada con éxito."
+            "Gráfica realizada con éxito.\n" + 
+            f"Tempera maxima con pedida de calor: {temperaturas_con_perdida[-1]:.2f}°C\n"
         )
