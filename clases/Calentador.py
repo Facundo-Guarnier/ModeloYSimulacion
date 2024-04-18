@@ -1,4 +1,4 @@
-from Recipiente import Recipiente
+from clases.Recipiente import Recipiente
 import matplotlib.pyplot as plt
 
 
@@ -136,9 +136,10 @@ class Calentador:
         plt.ylabel("Temperatura (°C)")
         plt.title("Aumento de temperatura del agua en el\nrecipiente con/sin perdida de calor.")
         plt.grid()
+        plt.legend()
         plt.show()
         return (
-            "Tp3 \n" +
+            "Tp4 \n" +
             "Gráfica realizada con éxito.\n" + 
             f"Tempera maxima con pedida de calor: {temperaturas_con_perdida[-1]:.2f}°C\n"
         )

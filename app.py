@@ -1,7 +1,7 @@
-from Calentador import Calentador
-from Liquido import Liquido
-from Material import Material
-from Recipiente import Recipiente
+from clases.Calentador import Calentador
+from clases.Liquido import Liquido
+from clases.Material import Material
+from clases.Recipiente import Recipiente
 
 
 if __name__ == '__main__':
@@ -41,6 +41,8 @@ if __name__ == '__main__':
     print("-"*10)
     print(cilindro)
     print("-"*10)
+    
+    
     print(calentador.tp1_a())
     print("-"*10)
     print(calentador.tp1_b())

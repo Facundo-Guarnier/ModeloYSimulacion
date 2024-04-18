@@ -1,5 +1,5 @@
-from Liquido import Liquido
-from Material import Material
+from clases.Liquido import Liquido
+from clases.Material import Material
 
 
 class Recipiente:
