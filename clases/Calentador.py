@@ -1,6 +1,5 @@
 import random
 from clases.Recipiente import Recipiente
-import matplotlib.pyplot as plt
 
 
 class Calentador:

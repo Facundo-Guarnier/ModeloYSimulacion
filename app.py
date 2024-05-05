@@ -1,5 +1,4 @@
-import copy
-import random
+import copy, random
 from matplotlib import pyplot as plt
 from clases.Calentador import Calentador
 from clases.Liquido import Liquido
@@ -185,8 +184,38 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Simulaciones que contengan todas las familias de curvas previas.
         """
-        #TODO
-        raise NotImplementedError("Tp5 E")
+        calentador_temporal = copy.deepcopy(self.calentador)
+        
+        #! Tp5 A
+        resistencia_original = calentador_temporal.resistencia
+        resistencias = [ resistencia_original * (1 + random.uniform(-0.1, 0.1)) for _ in range(5)]
+        
+        #! Tp5 B
+        temperaturas_iniciales = [random.normalvariate(10, 5) for _ in range(5)]
+        
+        #! Tp5 C
+        temperaturas_ambiente = [random.uniform(-20, 50) for _ in range(5)]
+        
+        #! Tp5 D
+        tensiones = [random.normalvariate(220, 40) for _ in range(5)]
+        
+        #! Gráficos
+        for i in range(5):
+            calentador_temporal.resistencia = resistencias[i]
+            calentador_temporal.temperatura_liquido_inicial = temperaturas_iniciales[i]
+            calentador_temporal.temperatura_ambiente = temperaturas_ambiente[i]
+            calentador_temporal.tension = tensiones[i]
+            calentador_temporal.potencia = tensiones[i]**2 / calentador_temporal.resistencia
+            plt.plot(range(calentador_temporal.tiempo_objetivo), calentador_temporal.aumento_temperatura_con_perdida(), label=f"Curva {i+1}" , linestyle="-")
+            
+            print(f"Curva {i+1}:\n - Resistencia: {resistencias[i]:.2f} Ω\n - Temperatura inicial: {temperaturas_iniciales[i]:.2f} °C\n - Temperatura ambiente: {temperaturas_ambiente[i]:.2f} °C\n - Tensión: {tensiones[i]:.2f} V")
+        
+        plt.xlabel("Tiempo (s)")
+        plt.ylabel("Temperatura (°C)")
+        plt.title("TP5 E: Variacion de todas las variables")
+        plt.grid()
+        plt.legend()
+        plt.show()
     
     
     def tp6(self) -> None:
@@ -197,7 +226,7 @@ class App:
         Variación máxima 50 grados en descenso. Rehacer el gráfico de temperaturas del TP 4.
         """
         
-        print("Tp6\nEvento estocástico de reducción de la temperatura ambiente\n - Probabilidad de ocurrencia: 1/300\n - Rango de reducción: [20, 50]\n - Rango de duración: [20, 120]")
+        print("Tp6\nEvento estocástico de reducción de la temperatura ambiente:\n - Probabilidad de ocurrencia: 1/300\n - Rango de reducción: [20, 50]\n - Rango de duración: [20, 120]")
         temperaturas, tiempos_evento, datos_evento = self.calentador.aumento_temperatura_estocástico(
             probabilidad=1/300,
             rango_reduccion=[20, 50],
@@ -222,24 +251,25 @@ class App:
         plt.grid()
         plt.legend()
         plt.show()
-
-
+    
+    
     def main(self) -> None:
-        # a.tp1_a()
-        # print("-"*10)
-        # a.tp1_b()
-        # print("-"*10)
-        # a.tp2()
-        # print("-"*10)
-        # a.tp3()
-        # a.tp4()
-        # a.tp5_a()
-        # a.tp5_b()
-        # a.tp5_c()
-        # a.tp5_d()
+        a.tp1_a()
+        print("-"*15)
+        a.tp1_b()
+        print("-"*15)
+        a.tp2()
+        print("-"*15)
+        a.tp3()
+        a.tp4()
+        a.tp5_a()
+        a.tp5_b()
+        a.tp5_c()
+        a.tp5_d()
+        print("-"*15)
         a.tp5_e()
-        print("-"*10)
-        # a.tp6()
+        print("-"*15)
+        a.tp6()
 
 if __name__ == '__main__':
     agua = Liquido(
@@ -248,14 +278,14 @@ if __name__ == '__main__':
             calor_especifico=4.186,
     )
     print(agua)
-    print("-"*10)
+    print("-"*15)
     
     telgopor = Material(
         nombre="Telgopor",
         conductividad_térmica=0.035,
     )
     print(telgopor)
-    print("-"*10)
+    print("-"*15)
     
     cilindro = Recipiente(
         altura=6.36619, 
@@ -265,7 +295,7 @@ if __name__ == '__main__':
         liquido=agua
     )
     print(cilindro)
-    print("-"*10)
+    print("-"*15)
     
     calentador = Calentador(
         temperatura_liquido_inicial=30,
@@ -278,8 +308,8 @@ if __name__ == '__main__':
     calentador.tension
     print(calentador)
     
-    print("+"*10)
-    print("+"*10)
+    print("+"*15)
+    print("+"*15)
     
     a = App(
         liquido=agua,
