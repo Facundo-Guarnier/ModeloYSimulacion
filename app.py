@@ -7,23 +7,15 @@ from clases.Recipiente import Recipiente
 
 
 class App:
-    def __init__(self) -> None:
+    def __init__(self, liquido: Liquido, material:Material, recipiente: Recipiente, calentador: Calentador ) -> None:
         """
         Clase que representa la aplicación principal.
         """
-        pass
-    
-    def setLiquido(self, liquido:Liquido) -> None:
         self.liquido = liquido
-
-    def setMaterial(self, materia:Material) -> None:
-        self.material = materia
-
-    def setRecipiente(self, recipiente:Recipiente) -> None:
+        self.material = material
         self.recipiente = recipiente
-    
-    def setCalentador(self, calentador:Calentador) -> None:
         self.calentador = calentador
+    
     
     def tp1_a(self) -> None:
         """
@@ -40,7 +32,7 @@ class App:
         cantidad_calor = self.calentador.potencia * 1
         
         print(
-            f"Tp1 B:\nAumento de temperatura luego de 1s: {self.calentador.cambio_temperatura_por_segundo(cantidad_calor):.2f} °C"
+            f"Tp1 B:\nAumento de temperatura luego de 1s: {self.calentador.cambio_temperatura_por_segundo_sin_perdida(cantidad_calor):.2f} °C"
         )
     
     
@@ -79,7 +71,7 @@ class App:
         
         plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_sin_perdida(), label="Sin perdida", linestyle="-")
         plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label="Con perdida" , linestyle="-")
-        plt.axhline(y=max_temp, color='g', linestyle='--', label="Temperatura final") 
+        plt.axhline(y=max_temp, color='g', linestyle='--', label="Temperatura maxima") 
         plt.text(0.5, max_temp, f'{max_temp:.2f}', color='g', fontsize=10, ha='center')
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -184,16 +176,46 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Simulaciones que contengan todas las familias de curvas previas.
         """
+        #TODO
         raise NotImplementedError("Tp5 E")
-
+    
+    
     def tp6(self) -> None:
         """
+        Simulación de un fenómeno estocástico que tiene una probabilidad de 
+        ocurrencia de 1/300 en cada tick de tiempo. Con variables aleatorias: si el 
+        fenómeno tiene lugar, ocurre un descenso de X grados, durante Y segundos. 
+        Variación máxima 50 grados en descenso. Rehacer el gráfico de temperaturas del TP 4.
         """
-        raise NotImplementedError("Tp6")
+        
+        print("Tp6\n Evento estocástico de reducción de la temperatura ambiente\n - Probabilidad de ocurrencia: 1/300\n - Rango de reducción: [20, 50]\n - Rango de duración: [20, 120]")
+        temperaturas, tiempos_evento, datos_evento = self.calentador.aumento_temperatura_estocástico(
+            probabilidad=1/300,
+            rango_reduccion=[20, 50],
+            rango_duracion=[20, 120],
+        )
+        max_temp = max(temperaturas)
+        min_temp = min(temperaturas)
+        
+        plt.plot(range(self.calentador.tiempo_objetivo), temperaturas, label="Temperatura del agua" , linestyle="-")
+        plt.axhline(y=max_temp, color='#00FF00', linestyle='--', label=f"Temperatura maxima ({max_temp:.2f})") 
+        plt.xlabel("Tiempo (s)")
+        plt.ylabel("Temperatura (°C)")
+        plt.title("TP6: Aumento de temperatura del agua con evento estocástico\n(Cambio de la temperatura ambiente)")
+        
+        colores_evento = ['#FF0000', '#FFFF00', '#00FFFF', '#808080']
+        #! Líneas verticales para cada tiempo en tiempos_evento
+        for i in range(len(datos_evento)):
+            plt.axvline(x=tiempos_evento[i*2], color=colores_evento[i%4], linestyle='--') 
+            plt.axvline(x=tiempos_evento[i*2+1], color=colores_evento[i%4], linestyle='--') 
+            plt.fill_betweenx(y=[min_temp, max_temp], x1=tiempos_evento[i*2], x2=tiempos_evento[i*2+1],  color=colores_evento[i%4], alpha=0.3, label=f"Evento {i+1} (Temp. ambiente {datos_evento[i][1]}C° durante {datos_evento[i][0]}s)")
+            print(f"Evento {i+1}: Temperatura ambiente de {datos_evento[i][1]}°C durante {datos_evento[i][0]}s (Inicio: {tiempos_evento[i*2]}s, Fin: {tiempos_evento[i*2+1]}s)")
+        plt.grid()
+        plt.legend()
+        plt.show()
 
 
 if __name__ == '__main__':
-    a = App()
     
     agua = Liquido(
         nombre="Agua",
@@ -201,8 +223,6 @@ if __name__ == '__main__':
         calor_especifico=4.186,
     )
     print(agua)
-    a.setLiquido(agua)
-    
     print("-"*10)
     
     telgopor = Material(
@@ -210,8 +230,6 @@ if __name__ == '__main__':
         conductividad_térmica=0.035,
     )
     print(telgopor)
-    a.setMaterial(telgopor)
-    
     print("-"*10)
     
     cilindro = Recipiente(
@@ -222,8 +240,6 @@ if __name__ == '__main__':
         liquido=agua
     )
     print(cilindro)
-    a.setRecipiente(cilindro)
-    
     print("-"*10)
     
     calentador = Calentador(
@@ -235,25 +251,29 @@ if __name__ == '__main__':
         tension=220,
     )
     calentador.tension
-    a.setCalentador(calentador)
     print(calentador)
     
     print("+"*10)
     print("+"*10)
     
+    a = App(
+        liquido=agua,
+        material=telgopor,
+        recipiente=cilindro,
+        calentador=calentador,
+    )
     
-    a.tp1_a()
-    print("-"*10)
-    a.tp1_b()
-    print("-"*10)
-    a.tp2()
-    print("-"*10)
-    a.tp3()
-    a.tp4()
-    a.tp5_a()
-    a.tp5_b()
-    a.tp5_c()
-    a.tp5_d()
-    
-    a.tp5_e()
+    # a.tp1_a()
+    # print("-"*10)
+    # a.tp1_b()
+    # print("-"*10)
+    # a.tp2()
+    # print("-"*10)
+    # a.tp3()
+    # a.tp4()
+    # a.tp5_a()
+    # a.tp5_b()
+    # a.tp5_c()
+    # a.tp5_d()
+    # # a.tp5_e()
     a.tp6()
