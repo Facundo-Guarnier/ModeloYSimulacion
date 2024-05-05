@@ -1,3 +1,4 @@
+import copy
 import random
 from matplotlib import pyplot as plt
 from clases.Calentador import Calentador
@@ -69,10 +70,9 @@ class App:
         
         max_temp = max(self.calentador.aumento_temperatura_con_perdida())
         
-        plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_sin_perdida(), label="Sin perdida", linestyle="-")
-        plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label="Con perdida" , linestyle="-")
-        plt.axhline(y=max_temp, color='g', linestyle='--', label="Temperatura maxima") 
-        plt.text(0.5, max_temp, f'{max_temp:.2f}', color='g', fontsize=10, ha='center')
+        plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_sin_perdida(), label="Temperatura sin perdida", linestyle="-")
+        plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label="Temperatura con perdida" , linestyle="-")
+        plt.axhline(y=max_temp, color='#00FF00', linestyle='--', label=f"Temperatura maxima ({max_temp:.2f})") 
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
         plt.title("TP4: Aumento de temperatura del agua en el\nrecipiente con/sin perdida de calor")
@@ -86,15 +86,18 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Distribución uniforme de 5 valores próximos de resistencias
         """
-        resistencia_original = self.calentador.resistencia
+        
+        calentador_temporal = copy.deepcopy(self.calentador)
+        
+        resistencia_original = calentador_temporal.resistencia
         resistencias = [ resistencia_original * (1 + random.uniform(-0.1, 0.1)) for _ in range(5)]
         
         for resistencia in resistencias:
-            self.calentador.resistencia = resistencia
-            self.calentador.potencia = self.calentador.tension**2 / resistencia
-            plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label=f"{resistencia:.2f} Ω" , linestyle="-")
+            calentador_temporal.resistencia = resistencia
+            calentador_temporal.potencia = calentador_temporal.tension**2 / resistencia
+            plt.plot(range(calentador_temporal.tiempo_objetivo), calentador_temporal.aumento_temperatura_con_perdida(), label=f"{resistencia:.2f} Ω" , linestyle="-")
         
-        self.calentador.resistencia = resistencia_original
+        calentador_temporal.resistencia = resistencia_original
         
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -109,14 +112,16 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Distribución normal de 5 temperaturas iniciales del agua. Media 10, desvío standard=5
         """
-        temperatura_inicial_original = self.calentador.temperatura_liquido_inicial
+        calentador_temporal = copy.deepcopy(self.calentador)
+        
+        temperatura_inicial_original = calentador_temporal.temperatura_liquido_inicial
         temperaturas_iniciales = [random.normalvariate(10, 5) for _ in range(5)]
         
         for temperatura_inicial in temperaturas_iniciales:
-            self.calentador.temperatura_liquido_inicial = temperatura_inicial
-            plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label=f"{temperatura_inicial:.2f} °C" , linestyle="-")
+            calentador_temporal.temperatura_liquido_inicial = temperatura_inicial
+            plt.plot(range(calentador_temporal.tiempo_objetivo), calentador_temporal.aumento_temperatura_con_perdida(), label=f"{temperatura_inicial:.2f} °C" , linestyle="-")
             
-        self.calentador.temperatura_liquido_inicial = temperatura_inicial_original
+        calentador_temporal.temperatura_liquido_inicial = temperatura_inicial_original
         
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -131,14 +136,16 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Distribución uniforme de 8 temperaturas iniciales del ambiente, entre -20 y 50 grados.
         """
-        temperaturas_ambiente_original = self.calentador.temperatura_ambiente
+        calentador_temporal = copy.deepcopy(self.calentador)
+        
+        temperaturas_ambiente_original = calentador_temporal.temperatura_ambiente
         temperaturas_ambiente = [random.uniform(-20, 50) for _ in range(8)]
         
         for temperatura_ambiente in temperaturas_ambiente:
-            self.calentador.temperatura_ambiente = temperatura_ambiente
-            plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label=f"{temperatura_ambiente:.2f} °C" , linestyle="-")
+            calentador_temporal.temperatura_ambiente = temperatura_ambiente
+            plt.plot(range(calentador_temporal.tiempo_objetivo), calentador_temporal.aumento_temperatura_con_perdida(), label=f"{temperatura_ambiente:.2f} °C" , linestyle="-")
         
-        self.calentador.temperatura_ambiente = temperaturas_ambiente_original
+        calentador_temporal.temperatura_ambiente = temperaturas_ambiente_original
         
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -153,15 +160,17 @@ class App:
         Generar familias de curvas con distribuciones normales y uniformes con:
         - Distribución normal de 5 valores de tension de alimentación Media 12 SD:4 o Media 220, SD 40.
         """
-        tension_original = self.calentador.tension
+        calentador_temporal = copy.deepcopy(self.calentador)
+        
+        tension_original = calentador_temporal.tension
         tensiones = [random.normalvariate(220, 40) for _ in range(5)] 
 
         for tension in tensiones:
-            self.calentador.tension = tension
-            self.calentador.potencia = tension**2 / self.calentador.resistencia
-            plt.plot(range(self.calentador.tiempo_objetivo), self.calentador.aumento_temperatura_con_perdida(), label=f"{tension:.2f} V" , linestyle="-")
+            calentador_temporal.tension = tension
+            calentador_temporal.potencia = tension**2 / calentador_temporal.resistencia
+            plt.plot(range(calentador_temporal.tiempo_objetivo), calentador_temporal.aumento_temperatura_con_perdida(), label=f"{tension:.2f} V" , linestyle="-")
         
-        self.calentador.tension = tension_original
+        calentador_temporal.tension = tension_original
         
         plt.xlabel("Tiempo (s)")
         plt.ylabel("Temperatura (°C)")
@@ -188,7 +197,7 @@ class App:
         Variación máxima 50 grados en descenso. Rehacer el gráfico de temperaturas del TP 4.
         """
         
-        print("Tp6\n Evento estocástico de reducción de la temperatura ambiente\n - Probabilidad de ocurrencia: 1/300\n - Rango de reducción: [20, 50]\n - Rango de duración: [20, 120]")
+        print("Tp6\nEvento estocástico de reducción de la temperatura ambiente\n - Probabilidad de ocurrencia: 1/300\n - Rango de reducción: [20, 50]\n - Rango de duración: [20, 120]")
         temperaturas, tiempos_evento, datos_evento = self.calentador.aumento_temperatura_estocástico(
             probabilidad=1/300,
             rango_reduccion=[20, 50],
@@ -215,12 +224,28 @@ class App:
         plt.show()
 
 
+    def main(self) -> None:
+        # a.tp1_a()
+        # print("-"*10)
+        # a.tp1_b()
+        # print("-"*10)
+        # a.tp2()
+        # print("-"*10)
+        # a.tp3()
+        # a.tp4()
+        # a.tp5_a()
+        # a.tp5_b()
+        # a.tp5_c()
+        # a.tp5_d()
+        a.tp5_e()
+        print("-"*10)
+        # a.tp6()
+
 if __name__ == '__main__':
-    
     agua = Liquido(
-        nombre="Agua",
-        densidad=1, 
-        calor_especifico=4.186,
+            nombre="Agua",
+            densidad=1, 
+            calor_especifico=4.186,
     )
     print(agua)
     print("-"*10)
@@ -263,17 +288,4 @@ if __name__ == '__main__':
         calentador=calentador,
     )
     
-    # a.tp1_a()
-    # print("-"*10)
-    # a.tp1_b()
-    # print("-"*10)
-    # a.tp2()
-    # print("-"*10)
-    # a.tp3()
-    # a.tp4()
-    # a.tp5_a()
-    # a.tp5_b()
-    # a.tp5_c()
-    # a.tp5_d()
-    # # a.tp5_e()
-    a.tp6()
+    a.main()

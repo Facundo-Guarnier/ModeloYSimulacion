@@ -73,9 +73,20 @@ class Calentador:
         Calcular la cantidad de calor perdido total por el recipiente.
         
         Returns:
-            float: Cantidad de calor perdido total por el recipiente: Q = k * A * ΔT / d -> J
+            float: Cantidad de calor perdido total por el recipiente: Q = k * A * (ΔT) / (d * m) -> J
         """
-        return self.recipiente.material.conductividad_térmica * (self.recipiente.superficie / self.recipiente.espesor_aislante) * (self.temperatura_liquido_final - self.temperatura_ambiente) / self.recipiente.masa_liquido
+        
+        total_calor_perdido = 0.0
+        temperatura_actual = self.temperatura_liquido_inicial
+
+        for segundo in range(self.tiempo_objetivo):
+            cantidad_calor_ganado = self.potencia 
+            cantidad_calor_perdido = self.recipiente.material.conductividad_térmica * (self.recipiente.superficie / self.recipiente.espesor_aislante) * (temperatura_actual - self.temperatura_ambiente) / self.recipiente.masa_liquido
+            total_calor_perdido += cantidad_calor_perdido
+            cantidad_calor_efectivo = cantidad_calor_ganado - cantidad_calor_perdido
+            temperatura_actual += cantidad_calor_efectivo / (self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico)
+        
+        return total_calor_perdido
     
     
     def aumento_temperatura_sin_perdida(self) -> list[float]:
