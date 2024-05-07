@@ -37,17 +37,17 @@ class Calentador:
         return float(self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico * (self.temperatura_liquido_final - self.temperatura_liquido_inicial))
     
     
-    def cambio_temperatura_por_segundo_sin_perdida(self, potencia:float) -> float:
+    def cambio_temperatura_por_segundo_sin_perdida(self, *, cantidad_calor:float) -> float:
         """
         Calcular el cambio de temperatura del agua en el recipiente en un segundo sin considerar la perdía de calor.
         
         Args:
-            potencia (float): Cantidad de calor entregada al agua en el recipiente.
+            cantidad_calor (float): Cantidad de calor entregada al agua en el recipiente.
         
         Returns:
             float: Cambio de temperatura del agua en el recipiente: ΔT = Q / (m * c) -> C°
         """
-        return potencia / (self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico)
+        return cantidad_calor / (self.recipiente.masa_liquido * self.recipiente.liquido.calor_especifico)
     
     
     def cambio_temperatura_por_segundo_con_perdida(self, temperatura_actual:float) -> float:
@@ -77,7 +77,7 @@ class Calentador:
         
         total_calor_perdido = 0.0
         temperatura_actual = self.temperatura_liquido_inicial
-
+        
         for segundo in range(self.tiempo_objetivo):
             cantidad_calor_ganado = self.potencia 
             cantidad_calor_perdido = self.recipiente.material.conductividad_térmica * (self.recipiente.superficie / self.recipiente.espesor_aislante) * (temperatura_actual - self.temperatura_ambiente) / self.recipiente.masa_liquido
@@ -100,7 +100,7 @@ class Calentador:
         temperatura_actual = self.temperatura_liquido_inicial
         temperaturas = []
         for segundo in range(self.tiempo_objetivo):
-            temperatura_actual += self.cambio_temperatura_por_segundo_sin_perdida(self.potencia)
+            temperatura_actual += self.cambio_temperatura_por_segundo_sin_perdida(cantidad_calor=self.potencia)
             temperaturas.append(temperatura_actual)
         
         return temperaturas
