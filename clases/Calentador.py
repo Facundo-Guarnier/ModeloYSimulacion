@@ -1,4 +1,4 @@
-import random
+import copy, random
 from clases.Recipiente import Recipiente
 
 
@@ -135,7 +135,7 @@ class Calentador:
             list[tuple[int, float]]]: Lista con los datos de los eventos (tiempo evento, temperatura ambiente).
         """
         
-        temperatura_ambiente_original = self.temperatura_ambiente
+        temperatura_ambiente_original = copy.copy(self.temperatura_ambiente)
         temperaturas_con_perdida:list[float] = []
         tiempos_evento:list[int] = []
         tiempo_restante_evento:int = 0
@@ -167,9 +167,9 @@ class Calentador:
             
             #! Fin de la simulación y finalizar evento
             if segundo == (self.tiempo_objetivo-1) and tiempo_restante_evento != 0:  
-                self.temperatura_ambiente = temperatura_ambiente_original
                 tiempos_evento.append(segundo)
                 datos_evento[-1] = (tiempos_evento[-1]-tiempos_evento[-2], self.temperatura_ambiente)
+                self.temperatura_ambiente = temperatura_ambiente_original
         
         return temperaturas_con_perdida, tiempos_evento, datos_evento
     
