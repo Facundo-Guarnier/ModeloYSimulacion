@@ -1,8 +1,7 @@
 
 def calentador_agua():
     """
-    Función principal que ejecuta los TPs del Calentador de Agua.
-    Tp1, Tp2, Tp3, Tp4, Tp5, Tp6
+    Función principal que ejecuta los TPs del Calentador de Agua: Tp1, Tp2, Tp3, Tp4, Tp5, Tp6
     """
     from Calentador_agua.clases.Liquido import Liquido
     from Calentador_agua.clases.Material import Material
@@ -58,5 +57,22 @@ def calentador_agua():
     
     a.main()
 
+
+def atencion_publico():
+    """
+    Función principal que ejecuta el TP de Atención al Público: Tp7
+    """
+    from Atencion_publico.App import App
+    from Atencion_publico.clases.Modelo import Modelo
+    
+    modelo = Modelo(
+        num_boxes=61,
+        # tiempo_simulacion=4*60*60
+    )
+    
+    a = App(modelo=modelo)
+    a.main()
+
 if __name__ == '__main__':
-    calentador_agua()
+    # calentador_agua()
+    atencion_publico()

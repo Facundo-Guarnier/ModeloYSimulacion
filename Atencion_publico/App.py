@@ -1,3 +1,5 @@
+from matplotlib import pyplot as plt
+from Atencion_publico.clases.Modelo import Modelo
 
 class App:
     """
@@ -13,50 +15,48 @@ class App:
     - Cada cliente no atendido se pierde, con un costo de $10.000.
     """
     
-    def __init__(self) -> None:
-        pass
+    def __init__(self, modelo:Modelo) -> None:
+        self.modelo10 = modelo
     
     
     def punto_A(self) -> None:
         """
         Cuantos clientes ingresaron.
         """
-        raise NotImplementedError("Punto A no implementado")
+        print(f"Punto A:\nClientes ingresados: {self.modelo10.clientes_totales}")
     
     
     def punto_B(self) -> None:
         """
         Cuantos clientes fueron atendidos.
         """
-        raise NotImplementedError("Punto B no implementado")
-    
+        print(f"Punto B:\nClientes atendidos: {self.modelo10.clientes_atendidos}")
     
     def punto_C(self) -> None:
         """
         Cuantos clientes no fueron atendidos.
         """
-        raise NotImplementedError("Punto C no implementado")
+        print(f"Punto C:\nClientes no atendidos: {self.modelo10.clientes_no_atendidos}")
     
     
     def punto_D(self) -> None:
         """
         Costo total de la operación.
         """
-        raise NotImplementedError("Punto D no implementado")
+        print(f"Punto D:\nCosto total de la operación: {self.modelo10.costo_total}")
     
     
     def punto_E(self) -> None:
         """
         Tiempo máximo de atención
         """
-        raise NotImplementedError("Punto E no implementado")
-    
+        print(f"Punto E:\nTiempo máximo de atención: {self.modelo10.tiempo_max_atencion / 60:.2f} minutos")    
     
     def punto_F(self) -> None:
         """
         Tiempo máximo de espera dentro del local.
         """
-        raise NotImplementedError("Punto F no implementado")
+        print(f"Punto F:\nTiempo máximo de espera dentro del local: {self.modelo10.tiempo_max_espera_local / 60:.2f} minutos")
     
     
     def punto_G(self) -> None:
@@ -65,4 +65,32 @@ class App:
         - Tiempo T
         - Animación
         """
-        raise NotImplementedError("Punto G no implementado")
+        tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo10.clientes_historico)
+        fig, ax = plt.subplots()
+        ax.plot(tiempos, clientes_en_cola, label="Clientes en Cola")
+        ax.plot(tiempos, clientes_en_atencion, label="Clientes en Atención")
+        ax.set_xlabel("Tiempo (segundos)")
+        ax.set_ylabel("Número de Clientes")
+        ax.legend()
+        plt.show()
+    
+    
+    def main(self) -> None:
+        """
+        Función principal que ejecuta el TP de Atención al Público: Tp7
+        """
+        
+        self.modelo10.simular()
+        self.punto_A()
+        print("-"*15)
+        self.punto_B()
+        print("-"*15)
+        self.punto_C()
+        print("-"*15)
+        self.punto_D()
+        print("-"*15)
+        self.punto_E()
+        print("-"*15)
+        self.punto_F()
+        print("-"*15)
+        self.punto_G()
