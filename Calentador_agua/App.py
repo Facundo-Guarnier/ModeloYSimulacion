@@ -1,9 +1,9 @@
 import copy, random
 from matplotlib import pyplot as plt
-from clases.Calentador import Calentador
-from clases.Liquido import Liquido
-from clases.Material import Material
-from clases.Recipiente import Recipiente
+from Calentador_agua.clases.Calentador import Calentador
+from Calentador_agua.clases.Liquido import Liquido
+from Calentador_agua.clases.Material import Material
+from Calentador_agua.clases.Recipiente import Recipiente
 
 
 class App:
@@ -296,74 +296,24 @@ class App:
     
     
     def main(self) -> None:
-        a.tp1_a()
+        self.tp1_a()
         print("-"*15)
-        a.tp1_b()
+        self.tp1_b()
         print("-"*15)
-        a.tp2()
+        self.tp2()
         print("-"*15)
-        a.tp3()
+        self.tp3()
         print("-"*15)
-        a.tp4()
+        self.tp4()
         print("-"*15)
-        a.tp5_a()
+        self.tp5_a()
         print("-"*15)
-        a.tp5_b()
+        self.tp5_b()
         print("-"*15)
-        a.tp5_c()
+        self.tp5_c()
         print("-"*15)
-        a.tp5_d()
+        self.tp5_d()
         print("-"*15)
-        a.tp5_e()
+        self.tp5_e()
         print("-"*15)
-        a.tp6()
-
-
-if __name__ == '__main__':
-    agua = Liquido(
-            nombre="Agua",
-            densidad=1, 
-            calor_especifico=4.186,
-    )
-    print(agua)
-    print("-"*15)
-    
-    telgopor = Material(
-        nombre="Telgopor",
-        conductividad_térmica=0.035,
-    )
-    print(telgopor)
-    print("-"*15)
-    
-    cilindro = Recipiente(
-        altura=6.36619, 
-        diametro=10, 
-        material=telgopor, 
-        espesor_aislante=0.01, 
-        liquido=agua
-    )
-    print(cilindro)
-    print("-"*15)
-    
-    calentador = Calentador(
-        temperatura_liquido_inicial=30,
-        temperatura_liquido_final=100,
-        temperatura_ambiente=30,
-        tiempo_objetivo=300,
-        recipiente=cilindro,
-        tension=220,
-    )
-    calentador.tension
-    print(calentador)
-    
-    print("+"*15)
-    print("+"*15)
-    
-    a = App(
-        liquido=agua,
-        material=telgopor,
-        recipiente=cilindro,
-        calentador=calentador,
-    )
-    
-    a.main()
+        self.tp6()

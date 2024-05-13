@@ -1,5 +1,5 @@
 import copy, random
-from clases.Recipiente import Recipiente
+from Calentador_agua.clases.Recipiente import Recipiente
 
 
 class Calentador:

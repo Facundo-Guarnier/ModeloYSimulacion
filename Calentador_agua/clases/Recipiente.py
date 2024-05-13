@@ -1,5 +1,5 @@
-from clases.Liquido import Liquido
-from clases.Material import Material
+from Calentador_agua.clases.Liquido import Liquido
+from Calentador_agua.clases.Material import Material
 
 
 class Recipiente:
