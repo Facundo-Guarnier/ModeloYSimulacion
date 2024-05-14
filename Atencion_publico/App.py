@@ -16,56 +16,55 @@ class App:
     """
     
     def __init__(self, modelo:Modelo) -> None:
-        self.modelo10 = modelo
+        self.modelo = modelo
     
     
     def punto_A(self) -> None:
         """
         Cuantos clientes ingresaron.
         """
-        print(f"Punto A:\nClientes ingresados: {self.modelo10.clientes_totales}")
+        print(f"Punto A:\nClientes ingresados: {self.modelo.clientes_totales}")
     
     
     def punto_B(self) -> None:
         """
         Cuantos clientes fueron atendidos.
         """
-        print(f"Punto B:\nClientes atendidos: {self.modelo10.clientes_atendidos}")
+        print(f"Punto B:\nClientes atendidos: {self.modelo.clientes_atendidos}")
     
     def punto_C(self) -> None:
         """
         Cuantos clientes no fueron atendidos.
         """
-        print(f"Punto C:\nClientes no atendidos: {self.modelo10.clientes_no_atendidos}")
+        print(f"Punto C:\nClientes no atendidos: {self.modelo.clientes_no_atendidos}")
     
     
     def punto_D(self) -> None:
         """
         Costo total de la operación.
         """
-        print(f"Punto D:\nCosto total de la operación: {self.modelo10.costo_total}")
+        print(f"Punto D:\nCosto total de la operación: {self.modelo.costo_total}")
     
     
     def punto_E(self) -> None:
         """
         Tiempo máximo de atención
         """
-        print(f"Punto E:\nTiempo máximo de atención: {self.modelo10.tiempo_max_atencion / 60:.2f} minutos")    
+        print(f"Punto E:\nTiempo máximo de atención: {self.modelo.tiempo_max_atencion / 60:.2f} minutos")    
     
     def punto_F(self) -> None:
         """
         Tiempo máximo de espera dentro del local.
         """
-        print(f"Punto F:\nTiempo máximo de espera dentro del local: {self.modelo10.tiempo_max_espera_local / 60:.2f} minutos")
+        #TODO Esta bien??
+        print(f"Punto F:\nTiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera / 60:.2f} minutos")
     
     
-    def punto_G(self) -> None:
+    def punto_G1(self) -> None:
         """
-        Graficar la distribución de personas en el local:
-        - Tiempo T
-        - Animación
+        Graficar la distribución de personas en el local.
         """
-        tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo10.clientes_historico)
+        tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo.clientes_historico)
         fig, ax = plt.subplots()
         ax.plot(tiempos, clientes_en_cola, label="Clientes en Cola")
         ax.plot(tiempos, clientes_en_atencion, label="Clientes en Atención")
@@ -75,22 +74,31 @@ class App:
         plt.show()
     
     
+    def punto_G2(self) -> None:
+        """
+        Animacion de la distribución de personas en el local.
+        """
+        raise NotImplementedError("Punto G2 no implementado")
+    
+    
     def main(self) -> None:
         """
         Función principal que ejecuta el TP de Atención al Público: Tp7
         """
         
-        self.modelo10.simular()
-        self.punto_A()
+        self.modelo.simular()
+        # self.punto_A()
+        # print("-"*15)
+        # self.punto_B()
+        # print("-"*15)
+        # self.punto_C()
+        # print("-"*15)
+        # self.punto_D()
+        # print("-"*15)
+        # self.punto_E()
+        # print("-"*15)
+        # self.punto_F()
+        # print("-"*15)
+        # self.punto_G1()
         print("-"*15)
-        self.punto_B()
-        print("-"*15)
-        self.punto_C()
-        print("-"*15)
-        self.punto_D()
-        print("-"*15)
-        self.punto_E()
-        print("-"*15)
-        self.punto_F()
-        print("-"*15)
-        self.punto_G()
+        self.punto_G2()
