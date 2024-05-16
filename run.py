@@ -66,7 +66,7 @@ def atencion_publico():
     from Atencion_publico.clases.Modelo import Modelo
     
     modelo = Modelo(
-        num_boxes=61,
+        num_boxes=5,
         # tiempo_simulacion=4*60*60
     )
     

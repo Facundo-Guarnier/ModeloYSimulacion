@@ -18,49 +18,67 @@ class App:
     def __init__(self, modelo:Modelo) -> None:
         self.modelo = modelo
     
-    
-    def punto_A(self) -> None:
+    def __str__(self) -> str:
+        return (
+            "Modelo de Atención al Público\n" +
+            f"Numero de Boxes: {str(self.modelo.num_boxes)}\n" +
+            f"Tiempo de Simulación: {str(self.modelo.tiempo_simulacion / 60)} minutos\n"
+        )
+    def punto_1(self) -> None:
         """
         Cuantos clientes ingresaron.
         """
-        print(f"Punto A:\nClientes ingresados: {self.modelo.clientes_totales}")
+        print(f"Punto 1:\nClientes ingresados: {self.modelo.clientes_totales}")
     
     
-    def punto_B(self) -> None:
+    def punto_2(self) -> None:
         """
         Cuantos clientes fueron atendidos.
         """
-        print(f"Punto B:\nClientes atendidos: {self.modelo.clientes_atendidos}")
+        print(f"Punto 2:\nClientes atendidos: {self.modelo.clientes_atendidos}")
     
-    def punto_C(self) -> None:
+    
+    def punto_3(self) -> None:
         """
-        Cuantos clientes no fueron atendidos.
+        Cuantos clientes no fueron atendidos. Es decir abandonaron el local por demoras.
         """
-        print(f"Punto C:\nClientes no atendidos: {self.modelo.clientes_no_atendidos}")
+        print(f"Punto 3:\nClientes no atendidos: {self.modelo.clientes_no_atendidos}")
     
     
-    def punto_D(self) -> None:
+    def punto_4(self) -> None:
         """
-        Costo total de la operación.
+        Tiempo mínimo de atención en box.
         """
-        print(f"Punto D:\nCosto total de la operación: {self.modelo.costo_total}")
+        print(f"Punto 4:\nTiempo mínimo de atención: {self.modelo.tiempo_min_atencion_historico / 60:.2f} minutos")
     
     
-    def punto_E(self) -> None:
+    def punto_5(self) -> None:
         """
         Tiempo máximo de atención
         """
-        print(f"Punto E:\nTiempo máximo de atención: {self.modelo.tiempo_max_atencion / 60:.2f} minutos")    
+        print(f"Punto 5:\nTiempo máximo de atención: {self.modelo.tiempo_max_atencion_historico / 60:.2f} minutos")    
     
-    def punto_F(self) -> None:
+    
+    def punto_6(self) -> None:
+        """
+        Tiempo mínimo de espera en salón.
+        """
+        print(f"Punto 6:\nTiempo mínimo de espera en salón: {self.modelo.tiempo_min_espera_salón_historico / 60:.2f} minutos")
+    
+    def punto_7(self) -> None:
         """
         Tiempo máximo de espera dentro del local.
         """
-        #TODO Esta bien??
-        print(f"Punto F:\nTiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera / 60:.2f} minutos")
+        
+        print(f"Punto 7:\nTiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera_salón_historico / 60:.2f} minutos")
+        
+    def punto_8(self) -> None:
+        """
+        Costo total de la operación.
+        """
+        print(f"Punto 8:\nCosto total de la operación: {self.modelo.costo_total}")
     
-    
-    def punto_G1(self) -> None:
+    def punto_9A(self) -> None:
         """
         Graficar la distribución de personas en el local.
         """
@@ -74,31 +92,65 @@ class App:
         plt.show()
     
     
-    def punto_G2(self) -> None:
+    def punto_9B(self, velocidad: int = 10, nombre_archivo: str = "animacion.avi"):
         """
-        Animacion de la distribución de personas en el local.
+        Presentación gráfica animada de cada proceso simulado, con diversas velocidades. Archivo AVI.
+        
+        Args:
+            velocidad: Velocidad de la animación (frames por segundo).
+            nombre_archivo: Nombre del archivo AVI.
         """
-        raise NotImplementedError("Punto G2 no implementado")
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from matplotlib.animation import FuncAnimation, writers
+        tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo.clientes_historico)
+        fig, ax = plt.subplots()
+        line_cola, = ax.plot([], [], label="Clientes en Cola", marker='o', linestyle='-', color='blue')
+        line_atencion, = ax.plot([], [], label="Clientes en Atención", marker='s', linestyle='-', color='red')
+        ax.set_xlim(0, self.modelo.tiempo_simulacion)
+        ax.set_ylim(0, max(clientes_en_cola) * 1.1)
+        ax.set_xlabel("Tiempo (segundos)")
+        ax.set_ylabel("Número de Clientes")
+        ax.legend()
+        
+        def animate(i):
+            line_cola.set_data(tiempos[:i], clientes_en_cola[:i])
+            line_atencion.set_data(tiempos[:i], clientes_en_atencion[:i])
+            return line_cola, line_atencion
+        
+        anim = FuncAnimation(fig, animate, frames=len(tiempos), interval=1000/velocidad, blit=True)
+        
+        # Guardar la animación en un archivo AVI
+        Writer = writers['ffmpeg']
+        writer = Writer(fps=velocidad, metadata=dict(artist='Me'), bitrate=1800)
+        anim.save(nombre_archivo, writer=writer)
+        
+        plt.show()
     
     
     def main(self) -> None:
         """
         Función principal que ejecuta el TP de Atención al Público: Tp7
         """
-        
+        print(self.__str__())
         self.modelo.simular()
-        # self.punto_A()
-        # print("-"*15)
-        # self.punto_B()
-        # print("-"*15)
-        # self.punto_C()
-        # print("-"*15)
-        # self.punto_D()
-        # print("-"*15)
-        # self.punto_E()
-        # print("-"*15)
-        # self.punto_F()
-        # print("-"*15)
-        # self.punto_G1()
         print("-"*15)
-        self.punto_G2()
+        self.punto_1()
+        print("-"*15)
+        self.punto_2()
+        print("-"*15)
+        self.punto_3()
+        print("-"*15)
+        self.punto_4()
+        print("-"*15)
+        self.punto_5()
+        print("-"*15)
+        self.punto_6()
+        print("-"*15)
+        self.punto_7()
+        print("-"*15)
+        self.punto_8()
+        print("-"*15)
+        self.punto_9A()
+        print("-"*15)
+        # self.punto_9B(velocidad=10, nombre_archivo="animacion.avi")
