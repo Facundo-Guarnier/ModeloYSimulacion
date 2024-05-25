@@ -24,64 +24,67 @@ class App:
             f"Numero de Boxes: {str(self.modelo.num_boxes)}\n" +
             f"Tiempo de Simulación: {str(self.modelo.tiempo_simulacion / 60)} minutos\n"
         )
-    def punto_1(self) -> None:
+    
+    
+    def punto_1(self) -> str:
         """
         Cuantos clientes ingresaron.
         """
-        print(f"Punto 1:\nClientes ingresados: {self.modelo.clientes_totales}")
+        return(f"Punto 1: Clientes ingresados: {self.modelo.clientes_totales}")
     
     
-    def punto_2(self) -> None:
+    def punto_2(self) -> str:
         """
         Cuantos clientes fueron atendidos.
         """
-        print(f"Punto 2:\nClientes atendidos: {self.modelo.clientes_atendidos}")
+        return(f"Punto 2: Clientes atendidos: {self.modelo.clientes_atendidos}")
     
     
-    def punto_3(self) -> None:
+    def punto_3(self) -> str:
         """
         Cuantos clientes no fueron atendidos. Es decir abandonaron el local por demoras.
         """
-        print(f"Punto 3:\nClientes no atendidos: {self.modelo.clientes_no_atendidos}")
+        return(f"Punto 3: Clientes no atendidos: {self.modelo.clientes_no_atendidos}")
     
     
-    def punto_4(self) -> None:
+    def punto_4(self) -> str:
         """
         Tiempo mínimo de atención en box.
         """
-        print(f"Punto 4:\nTiempo mínimo de atención: {self.modelo.tiempo_min_atencion_historico / 60:.2f} minutos")
+        return(f"Punto 4: Tiempo mínimo de atención: {self.modelo.tiempo_min_atencion_historico / 60:.2f} minutos")
     
     
-    def punto_5(self) -> None:
+    def punto_5(self) -> str:
         """
         Tiempo máximo de atención
         """
-        print(f"Punto 5:\nTiempo máximo de atención: {self.modelo.tiempo_max_atencion_historico / 60:.2f} minutos")    
+        return(f"Punto 5: Tiempo máximo de atención: {self.modelo.tiempo_max_atencion_historico / 60:.2f} minutos")    
     
     
-    def punto_6(self) -> None:
+    def punto_6(self) -> str:
         """
         Tiempo mínimo de espera en salón.
         """
-        print(f"Punto 6:\nTiempo mínimo de espera en salón: {self.modelo.tiempo_min_espera_salón_historico / 60:.2f} minutos")
+        return(f"Punto 6: Tiempo mínimo de espera en salón: {self.modelo.tiempo_min_espera_salón_historico / 60:.2f} minutos")
     
-    def punto_7(self) -> None:
+    def punto_7(self) -> str:
         """
         Tiempo máximo de espera dentro del local.
         """
         
-        print(f"Punto 7:\nTiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera_salón_historico / 60:.2f} minutos")
+        return(f"Punto 7: Tiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera_salón_historico / 60:.2f} minutos")
         
-    def punto_8(self) -> None:
+    def punto_8(self) -> str:
         """
         Costo total de la operación.
         """
-        print(f"Punto 8:\nCosto total de la operación: {self.modelo.costo_total}")
+        return(f"Punto 8: Costo total de la operación: {self.modelo.costo_total}")
     
     def punto_9A(self) -> None:
         """
         Graficar la distribución de personas en el local.
         """
+        print("Punto 9A: Gráfico de la distribución de personas en el local.")
         tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo.clientes_historico)
         fig, ax = plt.subplots()
         ax.plot(tiempos, clientes_en_cola, label="Clientes en Cola")
@@ -100,32 +103,107 @@ class App:
             velocidad: Velocidad de la animación (frames por segundo).
             nombre_archivo: Nombre del archivo AVI.
         """
-        import numpy as np
-        import matplotlib.pyplot as plt
-        from matplotlib.animation import FuncAnimation, writers
+        import pygame
+        from moviepy.editor import ImageSequenceClip
+        
+        pygame.init()
+        
+        #! Lista para almacenar los fotogramas
+        frames = []
+        
+        #! Configuraciones de la pantalla
+        screen_width = 1200
+        screen_height = 600
+        screen = pygame.display.set_mode((screen_width, screen_height))
+        pygame.display.set_caption('Simulación de Atención al Público')
+        
+        #! Colores
+        WHITE = (255, 255, 255)
+        BLACK = (0, 0, 0)
+        RED = (255, 0, 0)
+        GREEN = (0, 255, 0)
+        BLUE = (0, 0, 255)
+        
+        #! Configuración de la simulación
+        clock = pygame.time.Clock()
+        font = pygame.font.Font(None, 36)
+        
+        #! Extraer datos de la simulación 
         tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo.clientes_historico)
-        fig, ax = plt.subplots()
-        line_cola, = ax.plot([], [], label="Clientes en Cola", marker='o', linestyle='-', color='blue')
-        line_atencion, = ax.plot([], [], label="Clientes en Atención", marker='s', linestyle='-', color='red')
-        ax.set_xlim(0, self.modelo.tiempo_simulacion)
-        ax.set_ylim(0, max(clientes_en_cola) * 1.1)
-        ax.set_xlabel("Tiempo (segundos)")
-        ax.set_ylabel("Número de Clientes")
-        ax.legend()
         
-        def animate(i):
-            line_cola.set_data(tiempos[:i], clientes_en_cola[:i])
-            line_atencion.set_data(tiempos[:i], clientes_en_atencion[:i])
-            return line_cola, line_atencion
+        #! Posiciones y tamaños
+        box_width = 100
+        box_height = 50
+        margin = 20
+        tiempo_start_x = 50
+        tiempo_start_y = 50
+        cola_start_x = 50
+        cola_start_y = 150
+        box_start_x = 50
+        box_start_y = 250
         
-        anim = FuncAnimation(fig, animate, frames=len(tiempos), interval=1000/velocidad, blit=True)
+        #! Loop de animación
+        running = True
+        frame = 0
         
-        # Guardar la animación en un archivo AVI
-        Writer = writers['ffmpeg']
-        writer = Writer(fps=velocidad, metadata=dict(artist='Me'), bitrate=1800)
-        anim.save(nombre_archivo, writer=writer)
+        while running and frame < len(tiempos):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            
+            screen.fill(WHITE)
+            
+            #! Dibujar la cola de clientes
+            cola_text = font.render(f"Clientes en cola: {clientes_en_cola[frame]}", True, BLACK)
+            screen.blit(cola_text, (cola_start_x, cola_start_y - 50))
+            for i in range(clientes_en_cola[frame]):
+                pygame.draw.circle(screen, BLUE, (cola_start_x + (i * 25) + 15, cola_start_y), 10)
+            
+            #! Dibujar los clientes en los boxes
+            text = font.render("Clientes en atención", True, BLACK)
+            screen.blit(text, (box_start_x, box_start_y - 50))
+            for i in range(self.modelo.num_boxes):
+                box_x = box_start_x + i * (box_width + margin)
+                pygame.draw.rect(screen, BLACK, (box_x, box_start_y, box_width, box_height), 2)
+                if i < clientes_en_atencion[frame]:
+                    pygame.draw.circle(screen, GREEN, (box_x + box_width // 2, box_start_y + box_height // 2), 10)
+                    if i == self.modelo.num_boxes-1:
+                        text = font.render("Boxes llenos", True, RED)
+                        screen.blit(text, (box_start_x + 270, box_start_y - 50))
+            
+            #! Mostrar tiempo
+            tiempo_text = font.render(f"Tiempo: {tiempos[frame]}s", True, BLACK)
+            screen.blit(tiempo_text, (tiempo_start_x, tiempo_start_y))
+            
+            #! Mostrar datos finales
+            texts = [
+                self.punto_1(),
+                self.punto_2(),
+                self.punto_3(),
+                self.punto_4(),
+                self.punto_5(),
+                self.punto_6(),
+                self.punto_7(),
+                self.punto_8(),
+            ]
+            for i, t in enumerate(texts):
+                text = font.render(t, True, BLACK)
+                screen.blit(text, (box_start_x, box_start_y + 75 + (i * 30)))
+            
+            #! Capturar el fotograma para el video
+            frame_surface = pygame.surfarray.array3d(screen)
+            frames.append(frame_surface.swapaxes(0, 1))  # Swapping the axes to match the expected format
+            
+            #! Guardar frame
+            pygame.display.flip()
+            clock.tick(velocidad)
+            frame += 1
         
-        plt.show()
+        pygame.quit()
+        
+        #! Crear el video con MoviePy
+        clip = ImageSequenceClip(frames, fps=velocidad)
+        clip.write_videofile(nombre_archivo, codec='png')
     
     
     def main(self) -> None:
@@ -135,22 +213,22 @@ class App:
         print(self.__str__())
         self.modelo.simular()
         print("-"*15)
-        self.punto_1()
+        print(self.punto_1())
         print("-"*15)
-        self.punto_2()
+        print(self.punto_2())
         print("-"*15)
-        self.punto_3()
+        print(self.punto_3())
         print("-"*15)
-        self.punto_4()
+        print(self.punto_4())
         print("-"*15)
-        self.punto_5()
+        print(self.punto_5())
         print("-"*15)
-        self.punto_6()
+        print(self.punto_6())
         print("-"*15)
-        self.punto_7()
+        print(self.punto_7())
         print("-"*15)
-        self.punto_8()
+        print(self.punto_8())
         print("-"*15)
-        self.punto_9A()
-        print("-"*15)
-        # self.punto_9B(velocidad=10, nombre_archivo="animacion.avi")
+        # self.punto_9A()
+        # print("-"*15)
+        self.punto_9B(velocidad=600, nombre_archivo="animacion.avi")

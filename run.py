@@ -65,9 +65,11 @@ def atencion_publico():
     from Atencion_publico.App import App
     from Atencion_publico.clases.Modelo import Modelo
     
+    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    
     modelo = Modelo(
-        num_boxes=5,
-        # tiempo_simulacion=4*60*60
+        # num_boxes=2,
+        num_boxes=num_boxes,
     )
     
     a = App(modelo=modelo)

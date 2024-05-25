@@ -37,13 +37,13 @@ class Modelo:
         - tiempo_min_espera_salón_historico (int): Tiempo mínimo historico de espera en salón.
         - tiempo_max_espera_salón_historico (int): Tiempo máximo historico de espera en salón.
     """
-    def __init__(self, num_boxes:int = 3, tiempo_simulacion=4*60*60): # tiempo en segundos
+    def __init__(self, num_boxes:int = 3): # tiempo en segundos
         self.hora_apertura:int = 8 * 60 * 60
         self.hora_cierre:int = 12 * 60 * 60
         self.tiempo_max_espera:int = 30 * 60
         self.probabilidad_llegada:float = 1 / 144
         self.num_boxes:int = num_boxes
-        self.tiempo_simulacion:int = tiempo_simulacion
+        self.tiempo_simulacion:int = self.hora_cierre - self.hora_apertura
         self.costo_box:int = 1000
         self.costo_cliente_perdido:int = 10000
         self.tiempo_atencion_media:int = 10 * 60
