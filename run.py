@@ -76,6 +76,18 @@ if __name__ == '__main__':
     #T* Tp1 al Tp6
     # calentador_agua()
     
+    
     #T* Tp7
     num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    num_boxes = 1
+    atencion_publico(num_boxes=num_boxes)
+    num_boxes = 3
+    atencion_publico(num_boxes=num_boxes)
+    num_boxes = 6
+    atencion_publico(num_boxes=num_boxes)
+    num_boxes = 9
+    atencion_publico(num_boxes=num_boxes)
+    num_boxes = 10
+    atencion_publico(num_boxes=num_boxes)
+    num_boxes = 12
     atencion_publico(num_boxes=num_boxes)

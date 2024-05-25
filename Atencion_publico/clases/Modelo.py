@@ -72,12 +72,20 @@ class Modelo:
         """
         Ejecuta la simulación del modelo segundo a segundo.
         """
-        for tiempo in range(self.tiempo_simulacion):
-            self.procesar_llegadas(tiempo)
+        # for tiempo in range(self.tiempo_simulacion):
+        tiempo = 0
+        while True:
+            if tiempo < self.tiempo_simulacion:
+                self.procesar_llegadas(tiempo)
+            
             self.procesar_atencion(tiempo)
             self.actualizar_cola(tiempo)
             self.registrar_estado(tiempo)
-        
+            
+            if tiempo > self.tiempo_simulacion and self.cola == [] and all(not box.ocupado for box in self.boxes):
+                break
+            tiempo += 1
+            
         self.calcular_estadisticas()
     
     
@@ -117,7 +125,6 @@ class Modelo:
                 cliente.tiempo_inicio_atencion = tiempo
                 tiempo_atencion:int = max(np.ceil(np.random.normal(self.tiempo_atencion_media, self.tiempo_atencion_sd)), 0)     #! Max con 0 para evitar valores negativos
                 cliente.tiempo_salida = tiempo + tiempo_atencion
-                cliente.atendido = True
                 
                 #! Actualizar tiempos históricos de atención
                 self.tiempo_min_atencion_historico  = min(self.tiempo_min_atencion_historico, tiempo_atencion)
@@ -135,21 +142,7 @@ class Modelo:
         Args:
             - tiempo (int): Tiempo actual en segundos.
         """
-        # self.cola = [cliente for cliente in self.cola if tiempo - cliente.tiempo_llegada <= self.tiempo_max_espera]
-        temp_cola = []
-        for cliente in self.cola:
-            tiempo_en_espera = tiempo - cliente.tiempo_llegada
-            if tiempo_en_espera <= self.tiempo_max_espera:
-                temp_cola.append(cliente)
-            else:
-                self.contador += 1
-        
-        self.cola = temp_cola
-    
-    
-    
-    
-    
+        self.cola = [cliente for cliente in self.cola if tiempo - cliente.tiempo_llegada <= self.tiempo_max_espera]
     
     
     def registrar_estado(self, tiempo: int) -> None:
