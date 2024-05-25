@@ -58,17 +58,14 @@ def calentador_agua():
     a.main()
 
 
-def atencion_publico():
+def atencion_publico(num_boxes:int):
     """
     Función principal que ejecuta el TP de Atención al Público: Tp7
     """
     from Atencion_publico.App import App
     from Atencion_publico.clases.Modelo import Modelo
     
-    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
-    
     modelo = Modelo(
-        # num_boxes=2,
         num_boxes=num_boxes,
     )
     
@@ -76,5 +73,9 @@ def atencion_publico():
     a.main()
 
 if __name__ == '__main__':
+    #T* Tp1 al Tp6
     # calentador_agua()
-    atencion_publico()
+    
+    #T* Tp7
+    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    atencion_publico(num_boxes=num_boxes)

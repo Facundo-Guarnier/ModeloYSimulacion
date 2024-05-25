@@ -63,6 +63,9 @@ class Modelo:
         self.tiempo_max_atencion_historico:int = 0 #! punto 5
         self.tiempo_min_espera_salón_historico:int = 0 #! punto 6
         self.tiempo_max_espera_salón_historico:int = 0 #! punto 7
+        
+        
+        self.contador:int = 0
     
     
     def simular(self) -> None:
@@ -101,12 +104,12 @@ class Modelo:
                     #! Liberar box
                     box.ocupado = False
                     box.cliente_actual = None
-                    self.clientes_atendidos += 1
             
             #! Asignar un cliente a un box libre
             if not box.ocupado and self.cola:
                 #! Asignar cliente a box
                 cliente = self.cola.pop(0)
+                self.clientes_atendidos += 1
                 box.ocupado = True
                 box.cliente_actual = cliente
                 
@@ -114,6 +117,7 @@ class Modelo:
                 cliente.tiempo_inicio_atencion = tiempo
                 tiempo_atencion:int = max(np.ceil(np.random.normal(self.tiempo_atencion_media, self.tiempo_atencion_sd)), 0)     #! Max con 0 para evitar valores negativos
                 cliente.tiempo_salida = tiempo + tiempo_atencion
+                cliente.atendido = True
                 
                 #! Actualizar tiempos históricos de atención
                 self.tiempo_min_atencion_historico  = min(self.tiempo_min_atencion_historico, tiempo_atencion)
@@ -131,7 +135,21 @@ class Modelo:
         Args:
             - tiempo (int): Tiempo actual en segundos.
         """
-        self.cola = [cliente for cliente in self.cola if tiempo - cliente.tiempo_llegada <= self.tiempo_max_espera]
+        # self.cola = [cliente for cliente in self.cola if tiempo - cliente.tiempo_llegada <= self.tiempo_max_espera]
+        temp_cola = []
+        for cliente in self.cola:
+            tiempo_en_espera = tiempo - cliente.tiempo_llegada
+            if tiempo_en_espera <= self.tiempo_max_espera:
+                temp_cola.append(cliente)
+            else:
+                self.contador += 1
+        
+        self.cola = temp_cola
+    
+    
+    
+    
+    
     
     
     def registrar_estado(self, tiempo: int) -> None:
@@ -155,3 +173,6 @@ class Modelo:
         self.costo_total = self.num_boxes * self.costo_box + self.clientes_no_atendidos * self.costo_cliente_perdido
         for _, _, num_clientes_en_local in self.clientes_historico:
             self.num_max_cliente_espera = max(self.num_max_cliente_espera, num_clientes_en_local)
+        print(f"Contador: {self.contador}")
+        print(f"En la cola cuando cerró: {len(self.cola)}")
+        print(f"Clientes en los boxes cuando cerró: {sum(box.ocupado for box in self.boxes)}")

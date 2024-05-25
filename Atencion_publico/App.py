@@ -78,7 +78,7 @@ class App:
         """
         Costo total de la operación.
         """
-        return(f"Punto 8: Costo total de la operación: {self.modelo.costo_total}")
+        return(f"Punto 8: Costo total de la operación: ${self.modelo.costo_total}")
     
     def punto_9A(self) -> None:
         """
@@ -95,7 +95,7 @@ class App:
         plt.show()
     
     
-    def punto_9B(self, velocidad: int = 10, nombre_archivo: str = "animacion.avi"):
+    def punto_9B(self, velocidad: int = 10):
         """
         Presentación gráfica animada de cada proceso simulado, con diversas velocidades. Archivo AVI.
         
@@ -128,11 +128,11 @@ class App:
         clock = pygame.time.Clock()
         font = pygame.font.Font(None, 36)
         
-        #! Extraer datos de la simulación 
+        #! Extraer datos de la simulación
         tiempos, clientes_en_cola, clientes_en_atencion = zip(*self.modelo.clientes_historico)
         
         #! Posiciones y tamaños
-        box_width = 100
+        box_width = 80
         box_height = 50
         margin = 20
         tiempo_start_x = 50
@@ -167,7 +167,7 @@ class App:
                 pygame.draw.rect(screen, BLACK, (box_x, box_start_y, box_width, box_height), 2)
                 if i < clientes_en_atencion[frame]:
                     pygame.draw.circle(screen, GREEN, (box_x + box_width // 2, box_start_y + box_height // 2), 10)
-                    if i == self.modelo.num_boxes-1:
+                    if i == self.modelo.num_boxes - 1:
                         text = font.render("Boxes llenos", True, RED)
                         screen.blit(text, (box_start_x + 270, box_start_y - 50))
             
@@ -203,7 +203,7 @@ class App:
         
         #! Crear el video con MoviePy
         clip = ImageSequenceClip(frames, fps=velocidad)
-        clip.write_videofile(nombre_archivo, codec='png')
+        clip.write_videofile(f"Animacion_{self.modelo.num_boxes}-boxes.avi", codec='mpeg4')
     
     
     def main(self) -> None:
@@ -229,6 +229,6 @@ class App:
         print("-"*15)
         print(self.punto_8())
         print("-"*15)
-        # self.punto_9A()
+        self.punto_9A()
         # print("-"*15)
-        self.punto_9B(velocidad=600, nombre_archivo="animacion.avi")
+        # self.punto_9B(velocidad=600)
