@@ -229,6 +229,6 @@ class App:
         print("-"*15)
         print(self.punto_8())
         print("-"*15)
-        # self.punto_9A()
-        # print("-"*15)
+        self.punto_9A()
+        print("-"*15)
         self.punto_9B(velocidad=200)

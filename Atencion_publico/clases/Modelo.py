@@ -63,18 +63,15 @@ class Modelo:
         self.tiempo_max_atencion_historico:int = 0 #! punto 5
         self.tiempo_min_espera_salón_historico:int = 0 #! punto 6
         self.tiempo_max_espera_salón_historico:int = 0 #! punto 7
-        
-        
-        self.contador:int = 0
     
     
     def simular(self) -> None:
         """
         Ejecuta la simulación del modelo segundo a segundo.
         """
-        # for tiempo in range(self.tiempo_simulacion):
         tiempo = 0
         while True:
+            #! Procesar llegadas, si el local cerró no se permiten más clientes nuevos
             if tiempo < self.tiempo_simulacion:
                 self.procesar_llegadas(tiempo)
             
@@ -82,10 +79,12 @@ class Modelo:
             self.actualizar_cola(tiempo)
             self.registrar_estado(tiempo)
             
+            #! Condición de salida
             if tiempo > self.tiempo_simulacion and self.cola == [] and all(not box.ocupado for box in self.boxes):
                 break
-            tiempo += 1
             
+            tiempo += 1
+        
         self.calcular_estadisticas()
     
     
@@ -166,6 +165,3 @@ class Modelo:
         self.costo_total = self.num_boxes * self.costo_box + self.clientes_no_atendidos * self.costo_cliente_perdido
         for _, _, num_clientes_en_local in self.clientes_historico:
             self.num_max_cliente_espera = max(self.num_max_cliente_espera, num_clientes_en_local)
-        print(f"Contador: {self.contador}")
-        print(f"En la cola cuando cerró: {len(self.cola)}")
-        print(f"Clientes en los boxes cuando cerró: {sum(box.ocupado for box in self.boxes)}")
