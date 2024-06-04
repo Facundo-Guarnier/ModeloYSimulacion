@@ -206,12 +206,12 @@ class App:
         clip.write_videofile(f"Animacion_{self.modelo.num_boxes}-boxes.avi", codec='mpeg4')
     
     
-    def main(self) -> None:
+    def main(self, tp8:bool = False) -> None:
         """
         Función principal que ejecuta el TP de Atención al Público: Tp7
         """
         print(self.__str__())
-        self.modelo.simular()
+        self.modelo.simular(tp8=tp8)
         print("-"*15)
         print(self.punto_1())
         print("-"*15)

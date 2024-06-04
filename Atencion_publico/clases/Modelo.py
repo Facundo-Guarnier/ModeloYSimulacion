@@ -63,9 +63,14 @@ class Modelo:
         self.tiempo_max_atencion_historico:int = 0 #! punto 5
         self.tiempo_min_espera_salón_historico:int = 0 #! punto 6
         self.tiempo_max_espera_salón_historico:int = 0 #! punto 7
+        
+        self.media_llegada = 10 * 60 * 60  #! 10 AM en segundos
+        self.desviacion_llegada = 2 * 60 * 60  #! 2 horas en segundos
+        # self.media_llegada = self.tiempo_simulacion/2
+        # self.desviacion_llegada = self.tiempo_simulacion/2
     
     
-    def simular(self) -> None:
+    def simular(self, tp8:bool) -> None:
         """
         Ejecuta la simulación del modelo segundo a segundo.
         """
@@ -73,8 +78,10 @@ class Modelo:
         while True:
             #! Procesar llegadas, si el local cerró no se permiten más clientes nuevos
             if tiempo < self.tiempo_simulacion:
-                self.procesar_llegadas(tiempo)
-            
+                if tp8:
+                    self.procesar_llegadas(tiempo)
+                else:
+                    self.procesar_llegadas_tp8(tiempo)
             self.procesar_atencion(tiempo)
             self.actualizar_cola(tiempo)
             self.registrar_estado(tiempo)
@@ -94,6 +101,23 @@ class Modelo:
         """
         #! Probabilidad de que llegue un cliente
         if random.random() < self.probabilidad_llegada:
+            self.clientes_totales += 1
+            cliente = Cliente(tiempo)
+            self.cola.append(cliente)
+    
+    
+    def procesar_llegadas_tp8(self, tiempo: int) -> None:
+        """
+        Gestiona la llegada de nuevos clientes con una distribución normal.
+        """
+        tiempo_llegada_segundos = np.random.normal(self.media_llegada, self.desviacion_llegada)
+        tiempo_llegada_segundos = max(min(tiempo_llegada_segundos, self.hora_cierre), self.hora_apertura)
+        
+        #! Convierte el tiempo de llegada a segundos relativos al inicio de la simulación
+        tiempo_llegada_relativo = int(tiempo_llegada_segundos - self.hora_apertura)
+        
+        #! Solo crea un cliente si el tiempo de llegada está dentro del tiempo actual de la simulación
+        if random.random() < tiempo_llegada_relativo:
             self.clientes_totales += 1
             cliente = Cliente(tiempo)
             self.cola.append(cliente)

@@ -58,7 +58,7 @@ def calentador_agua():
     a.main()
 
 
-def atencion_publico(num_boxes:int):
+def atencion_publico(num_boxes:int, tp8:bool = False):
     """
     Función principal que ejecuta el TP de Atención al Público: Tp7
     """
@@ -70,7 +70,7 @@ def atencion_publico(num_boxes:int):
     )
     
     a = App(modelo=modelo)
-    a.main()
+    a.main(tp8=tp8)
 
 if __name__ == '__main__':
     #T* Tp1 al Tp6
@@ -78,5 +78,9 @@ if __name__ == '__main__':
     
     
     #T* Tp7
+    # num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    # atencion_publico(num_boxes=num_boxes)
+    
+    #T* Tp8
     num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
-    atencion_publico(num_boxes=num_boxes)
+    atencion_publico(num_boxes=num_boxes, tp8=True)
