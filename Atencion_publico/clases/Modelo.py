@@ -1,7 +1,8 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+from scipy.stats import truncnorm
+from scipy.stats import norm
 
 from Atencion_publico.clases.Box import Box
 from Atencion_publico.clases.Cliente import Cliente
@@ -59,18 +60,18 @@ class Modelo:
         self.clientes_historico:list[tuple[int, int, int]] = []
         
         self.num_max_cliente_espera:int = 0
-        self.tiempo_min_atencion_historico:int = 0 #! punto 4
-        self.tiempo_max_atencion_historico:int = 0 #! punto 5
-        self.tiempo_min_espera_salón_historico:int = 0 #! punto 6
-        self.tiempo_max_espera_salón_historico:int = 0 #! punto 7
+        self.tiempo_min_atencion_historico:int = 0      #! punto 4
+        self.tiempo_max_atencion_historico:int = 0      #! punto 5
+        self.tiempo_min_espera_salón_historico:int = 0  #! punto 6
+        self.tiempo_max_espera_salón_historico:int = 0  #! punto 7
         
-        self.media_llegada = 10 * 60 * 60  #! 10 AM en segundos
-        self.desviacion_llegada = 2 * 60 * 60  #! 2 horas en segundos
-        # self.media_llegada = self.tiempo_simulacion/2
-        # self.desviacion_llegada = self.tiempo_simulacion/2
+        self.tp8 = False
+        self.tiempos_llegada:list[int] = []     #! Para graficar llegadas de clientes (campana de Gauss)
+        self.media_llegada = 10 * 60 * 60 - self.hora_apertura      #! 10 AM pero en relación a los 14400
+        self.desviacion_llegada = 2 * 60 * 60       #! 2 horas en segundos
     
     
-    def simular(self, tp8:bool) -> None:
+    def simular(self) -> None:
         """
         Ejecuta la simulación del modelo segundo a segundo.
         """
@@ -78,10 +79,11 @@ class Modelo:
         while True:
             #! Procesar llegadas, si el local cerró no se permiten más clientes nuevos
             if tiempo < self.tiempo_simulacion:
-                if tp8:
-                    self.procesar_llegadas(tiempo)
+                if self.tp8:
+                    self.procesar_llegadas_dist_normal(tiempo=tiempo)
                 else:
-                    self.procesar_llegadas_tp8(tiempo)
+                    self.procesar_llegadas_prob_constante(tiempo=tiempo)
+            
             self.procesar_atencion(tiempo)
             self.actualizar_cola(tiempo)
             self.registrar_estado(tiempo)
@@ -95,32 +97,46 @@ class Modelo:
         self.calcular_estadisticas()
     
     
-    def procesar_llegadas(self, tiempo: int) -> None:
+    def procesar_llegadas_prob_constante(self, tiempo: int) -> None:
         """
-        Gestiona la llegada de nuevos clientes.
+        Gestiona la llegada de nuevos clientes con probabilidad constante. Crea nuevos clientes con el tiempo de llegada actual y los agrega a la cola.
+        
+        Args:
+            - tiempo (int): Tiempo actual en segundos.
         """
         #! Probabilidad de que llegue un cliente
         if random.random() < self.probabilidad_llegada:
             self.clientes_totales += 1
             cliente = Cliente(tiempo)
             self.cola.append(cliente)
+            
+            #! Registra el tiempo de llegada para graficarlo
+            self.tiempos_llegada.append(tiempo)
     
     
-    def procesar_llegadas_tp8(self, tiempo: int) -> None:
+    def procesar_llegadas_dist_normal(self, tiempo: int) -> None:
         """
-        Gestiona la llegada de nuevos clientes con una distribución normal.
+        Gestiona la llegada de nuevos clientes en base a una distribución normal con:
+        - Media: 2 horas (7200 segundos), es decir, entre las 8 y las 12 AM con respecto a los 14400 segundos de la simulación.
+        - Desviación estándar: 2 horas (7200 segundos).
+        
+        Crea nuevos clientes con el tiempo de llegada actual y los agrega a la cola.
+        
+        Args:
+            - tiempo (int): Tiempo actual en segundos para calcular la probabilidad de llegada.
         """
-        tiempo_llegada_segundos = np.random.normal(self.media_llegada, self.desviacion_llegada)
-        tiempo_llegada_segundos = max(min(tiempo_llegada_segundos, self.hora_cierre), self.hora_apertura)
         
-        #! Convierte el tiempo de llegada a segundos relativos al inicio de la simulación
-        tiempo_llegada_relativo = int(tiempo_llegada_segundos - self.hora_apertura)
+        #! Calcula la probabilidad de llegada para el tiempo actual, el *150 es para ajustar la escala a una esperanza matemática de 100.
+        probabilidad_llegada = norm.pdf(tiempo, loc=7200, scale=7200) * 155
         
-        #! Solo crea un cliente si el tiempo de llegada está dentro del tiempo actual de la simulación
-        if random.random() < tiempo_llegada_relativo:
+        #! Comparar el número aleatorio con la probabilidad de llegada
+        if random.random() < probabilidad_llegada:
             self.clientes_totales += 1
             cliente = Cliente(tiempo)
             self.cola.append(cliente)
+            
+            #! Registra el tiempo de llegada para graficarlo
+            self.tiempos_llegada.append(tiempo)
     
     
     def procesar_atencion(self, tiempo: int) -> None:

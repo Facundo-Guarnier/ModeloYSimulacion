@@ -18,6 +18,7 @@ class App:
     def __init__(self, modelo:Modelo) -> None:
         self.modelo = modelo
     
+    
     def __str__(self) -> str:
         return (
             "Modelo de Atención al Público\n" +
@@ -67,18 +68,21 @@ class App:
         """
         return(f"Punto 6: Tiempo mínimo de espera en salón: {self.modelo.tiempo_min_espera_salón_historico / 60:.2f} minutos")
     
+    
     def punto_7(self) -> str:
         """
         Tiempo máximo de espera dentro del local.
         """
         
         return(f"Punto 7: Tiempo máximo de espera dentro del local: {self.modelo.tiempo_max_espera_salón_historico / 60:.2f} minutos")
-        
+    
+    
     def punto_8(self) -> str:
         """
         Costo total de la operación.
         """
         return(f"Punto 8: Costo total de la operación: ${self.modelo.costo_total}")
+    
     
     def punto_9A(self) -> None:
         """
@@ -91,11 +95,24 @@ class App:
         ax.plot(tiempos, clientes_en_atencion, label="Clientes en Atención")
         ax.set_xlabel("Tiempo (segundos)")
         ax.set_ylabel("Número de Clientes")
-        ax.legend()
+        plt.legend()
+        plt.title("Distribución de Clientes en el Local")
         plt.show()
     
     
-    def punto_9B(self, velocidad: int = 10):
+    def punto_9B(self) -> None:
+        """
+        Graficar un histograma de los tiempos de llegada de los clientes.
+        """
+        print("Punto 9B: Histograma de los tiempos de llegada de los clientes.")
+        plt.hist(self.modelo.tiempos_llegada, bins=20)      #! 20 bins (20 barras)
+        plt.xlabel("Tiempo de Llegada (segundos desde la apertura)")
+        plt.ylabel("Frecuencia")
+        plt.title("Distribución de Llegada de Clientes")
+        plt.show()
+    
+    
+    def punto_9C(self, velocidad: int = 10):
         """
         Presentación gráfica animada de cada proceso simulado, con diversas velocidades. Archivo AVI.
         
@@ -206,12 +223,14 @@ class App:
         clip.write_videofile(f"Animacion_{self.modelo.num_boxes}-boxes.avi", codec='mpeg4')
     
     
-    def main(self, tp8:bool = False) -> None:
+    def main(self, tp8:bool) -> None:
         """
         Función principal que ejecuta el TP de Atención al Público: Tp7
         """
         print(self.__str__())
-        self.modelo.simular(tp8=tp8)
+        self.modelo.tp8 = tp8
+        print(f"Distribución normal: {self.modelo.tp8}")
+        self.modelo.simular()
         print("-"*15)
         print(self.punto_1())
         print("-"*15)
@@ -231,4 +250,6 @@ class App:
         print("-"*15)
         self.punto_9A()
         print("-"*15)
-        self.punto_9B(velocidad=200)
+        self.punto_9B()
+        print("-"*15)
+        self.punto_9C(velocidad=200)

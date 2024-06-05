@@ -72,15 +72,24 @@ def atencion_publico(num_boxes:int, tp8:bool = False):
     a = App(modelo=modelo)
     a.main(tp8=tp8)
 
+
 if __name__ == '__main__':
+    # print("Calentador de Agua")
     #T* Tp1 al Tp6
+    # print("Tp1 al Tp6")
     # calentador_agua()
+    # print("+"*15,"\n")
     
     
+    print("Atención al público")
+    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
     #T* Tp7
-    # num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    # print("Tp7")
     # atencion_publico(num_boxes=num_boxes)
+    # print("+"*15,"\n")
+    
     
     #T* Tp8
-    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    print("Tp8")
     atencion_publico(num_boxes=num_boxes, tp8=True)
+    print("+"*15,"\n")
