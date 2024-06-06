@@ -1,9 +1,19 @@
 import pygame, math
 
 class Conducto:
-    def __init__(self, forma, dimensiones):
+    """
+    Clase que modela un conducto por donde se desplazan las partículas.
+    
+    Args:
+    
+    Attributes:
+    """
+    
+    
+    def __init__(self, *, forma:str, dimensiones:list[int], tolerancia:int):
         self.forma = forma
         self.dimensiones = dimensiones
+        self.toleracia = tolerancia
         self.centro_x = 800 // 2
         self.centro_y = 600 // 2
 
@@ -20,23 +30,36 @@ class Conducto:
             pygame.draw.rect(pantalla, (128, 128, 128), (self.centro_x - ancho // 2, self.centro_y - alto // 2, ancho, alto), 2)
 
 
-    def verificar_adherencia(self, particula):
-        TOLERANCIA_ADHERENCIA = 2
+    def verificar_adherencia(self, particula) -> bool:
+        """
+        Verifica si la partícula se encuentra adherida al conducto.
         
+        Returns:
+            - bool: True si la partícula se encuentra adherida al conducto, False en caso contrario.
+        """
+        #! Circular
         if self.forma == "circular":
             radio = self.dimensiones[0] // 2
             distancia_centro = math.sqrt((particula.x - self.centro_x)**2 + (particula.y - self.centro_y)**2)
-            return distancia_centro <= radio + particula.lado // 2 + TOLERANCIA_ADHERENCIA
+            return not (distancia_centro <= radio + particula.lado // 2 + self.toleracia)
+        
+        #! Cuadrada
         elif self.forma == "cuadrada":
             lado = self.dimensiones[0]
-            return particula.x >= self.centro_x - lado // 2 - TOLERANCIA_ADHERENCIA and \
-                   particula.x <= self.centro_x + lado // 2 + TOLERANCIA_ADHERENCIA and \
-                   particula.y >= self.centro_y - lado // 2 - TOLERANCIA_ADHERENCIA and \
-                   particula.y <= self.centro_y + lado // 2 + TOLERANCIA_ADHERENCIA
-        elif self.forma == "rectangular":
+            return not(
+                particula.x >= self.centro_x - lado // 2 - self.toleracia and \
+                particula.x <= self.centro_x + lado // 2 + self.toleracia and \
+                particula.y >= self.centro_y - lado // 2 - self.toleracia and \
+                particula.y <= self.centro_y + lado // 2 + self.toleracia
+            )
+            
+        #! Rectangular
+        else:
             ancho = self.dimensiones[0]
             alto = self.dimensiones[1]
-            return particula.x >= self.centro_x - ancho // 2 - TOLERANCIA_ADHERENCIA and \
-                   particula.x <= self.centro_x + ancho // 2 + TOLERANCIA_ADHERENCIA and \
-                   particula.y >= self.centro_y - alto // 2 - TOLERANCIA_ADHERENCIA and \
-                   particula.y <= self.centro_y + alto // 2 + TOLERANCIA_ADHERENCIA
+            return not(
+                particula.x >= self.centro_x - ancho // 2 - self.toleracia and \
+                particula.x <= self.centro_x + ancho // 2 + self.toleracia and \
+                particula.y >= self.centro_y - alto // 2 - self.toleracia and \
+                particula.y <= self.centro_y + alto // 2 + self.toleracia
+            )
