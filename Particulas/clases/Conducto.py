@@ -1,5 +1,7 @@
 import pygame, math
 
+from Particulas.clases.Particula import Particula
+
 class Conducto:
     """
     Clase que modela un conducto por donde se desplazan las partículas.
@@ -10,12 +12,15 @@ class Conducto:
     """
     
     
-    def __init__(self, *, forma:str, dimensiones:list[int], tolerancia:int):
+    def __init__(self, *, forma:str, dimensiones:list[int], tolerancia:int, distancia_final:int):
         self.forma = forma
         self.dimensiones = dimensiones
         self.toleracia = tolerancia
+        self.distancia_final = distancia_final
+        self.particulas_adheridas:list[Particula] = []
         self.centro_x = 800 // 2
         self.centro_y = 600 // 2
+
 
     def dibujar(self, pantalla):
         if self.forma == "circular":
@@ -41,16 +46,16 @@ class Conducto:
         if self.forma == "circular":
             radio = self.dimensiones[0] // 2
             distancia_centro = math.sqrt((particula.x - self.centro_x)**2 + (particula.y - self.centro_y)**2)
-            return not (distancia_centro <= radio + particula.lado // 2 + self.toleracia)
+            return not (distancia_centro <= radio + particula.lado // 2 - self.toleracia)
         
         #! Cuadrada
         elif self.forma == "cuadrada":
             lado = self.dimensiones[0]
             return not(
-                particula.x >= self.centro_x - lado // 2 - self.toleracia and \
-                particula.x <= self.centro_x + lado // 2 + self.toleracia and \
-                particula.y >= self.centro_y - lado // 2 - self.toleracia and \
-                particula.y <= self.centro_y + lado // 2 + self.toleracia
+                particula.x >= self.centro_x - lado // 2 + self.toleracia and \
+                particula.x <= self.centro_x + lado // 2 - self.toleracia and \
+                particula.y >= self.centro_y - lado // 2 + self.toleracia and \
+                particula.y <= self.centro_y + lado // 2 - self.toleracia
             )
             
         #! Rectangular
@@ -58,8 +63,8 @@ class Conducto:
             ancho = self.dimensiones[0]
             alto = self.dimensiones[1]
             return not(
-                particula.x >= self.centro_x - ancho // 2 - self.toleracia and \
-                particula.x <= self.centro_x + ancho // 2 + self.toleracia and \
-                particula.y >= self.centro_y - alto // 2 - self.toleracia and \
-                particula.y <= self.centro_y + alto // 2 + self.toleracia
+                particula.x >= self.centro_x - ancho // 2 + self.toleracia and \
+                particula.x <= self.centro_x + ancho // 2 - self.toleracia and \
+                particula.y >= self.centro_y - alto // 2 + self.toleracia and \
+                particula.y <= self.centro_y + alto // 2 - self.toleracia
             )

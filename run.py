@@ -89,9 +89,9 @@ if __name__ == '__main__':
     # print("+"*15,"\n")
     
     
-    # print("Atención al público")
+    print("Atención al público")
     # num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
-    #T* Tp7
+    # T* Tp7
     # print("Tp7")
     # atencion_publico(num_boxes=num_boxes)
     # print("+"*15,"\n")

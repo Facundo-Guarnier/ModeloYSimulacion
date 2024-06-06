@@ -105,6 +105,7 @@ class App:
         Graficar un histograma de los tiempos de llegada de los clientes.
         """
         print("Punto 9B: Histograma de los tiempos de llegada de los clientes.")
+        print(self.modelo.desviacion_llegada)
         plt.hist(self.modelo.tiempos_llegada, bins=20)      #! 20 bins (20 barras)
         plt.xlabel("Tiempo de Llegada (segundos desde la apertura)")
         plt.ylabel("Frecuencia")
@@ -209,7 +210,7 @@ class App:
             
             #! Capturar el fotograma para el video
             frame_surface = pygame.surfarray.array3d(screen)
-            frames.append(frame_surface.swapaxes(0, 1))  # Swapping the axes to match the expected format
+            # frames.append(frame_surface.swapaxes(0, 1))
             
             #! Guardar frame
             pygame.display.flip()
@@ -252,4 +253,4 @@ class App:
         print("-"*15)
         self.punto_9B()
         print("-"*15)
-        self.punto_9C(velocidad=200)
+        self.punto_9C(velocidad=1000)

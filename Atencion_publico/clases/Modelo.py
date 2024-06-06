@@ -68,7 +68,7 @@ class Modelo:
         self.tp8 = False
         self.tiempos_llegada:list[int] = []     #! Para graficar llegadas de clientes (campana de Gauss)
         self.media_llegada = 10 * 60 * 60 - self.hora_apertura      #! 10 AM pero en relación a los 14400
-        self.desviacion_llegada = 2 * 60 * 60       #! 2 horas en segundos
+        self.desviacion_llegada = (2 * 60 * 60)/3     #! 2 horas en segundos
     
     
     def simular(self) -> None:

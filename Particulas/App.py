@@ -29,10 +29,11 @@ class App:
         
         # distancia_final = int(input("Ingrese la distancia final al centro (en mm): "))
         
+        # forma_conducto = "cuadrada"
         forma_conducto = "circular"
         dimensiones_conducto = [100]
         lado_particula = 5
-        distancia_final = 100
+        distancia_final = 20
         tolerancia = 5
 
         simulacion = Simulacion(
