@@ -60,7 +60,7 @@ def calentador_agua():
 
 def atencion_publico(num_boxes:int, tp8:bool = False):
     """
-    Función principal que ejecuta el TP de Atención al Público: Tp7
+    Función principal que ejecuta el TP de Atención al Público: Tp7 y Tp8
     """
     from Atencion_publico.App import App
     from Atencion_publico.clases.Modelo import Modelo
@@ -72,6 +72,14 @@ def atencion_publico(num_boxes:int, tp8:bool = False):
     a = App(modelo=modelo)
     a.main(tp8=tp8)
 
+def particulas():
+    """
+    Función principal que ejecuta el TP de Partículas: Tp9
+    """
+    from Particulas.App import App
+    a = App()
+    a.main()
+
 
 if __name__ == '__main__':
     # print("Calentador de Agua")
@@ -81,8 +89,8 @@ if __name__ == '__main__':
     # print("+"*15,"\n")
     
     
-    print("Atención al público")
-    num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
+    # print("Atención al público")
+    # num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
     #T* Tp7
     # print("Tp7")
     # atencion_publico(num_boxes=num_boxes)
@@ -90,6 +98,11 @@ if __name__ == '__main__':
     
     
     #T* Tp8
-    print("Tp8")
-    atencion_publico(num_boxes=num_boxes, tp8=True)
-    print("+"*15,"\n")
+    # print("Tp8")
+    # atencion_publico(num_boxes=num_boxes, tp8=True)
+    # print("+"*15,"\n")
+    
+    
+    #T* Tp9
+    print("Tp9")
+    particulas()
