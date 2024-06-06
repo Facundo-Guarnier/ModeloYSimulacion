@@ -118,8 +118,8 @@ class App:
         Presentación gráfica animada de cada proceso simulado, con diversas velocidades. Archivo AVI.
         
         Args:
-            velocidad: Velocidad de la animación (frames por segundo).
-            nombre_archivo: Nombre del archivo AVI.
+            - velocidad: Velocidad de la animación (frames por segundo).
+            - nombre_archivo: Nombre del archivo AVI.
         """
         import pygame
         from moviepy.editor import ImageSequenceClip
@@ -195,6 +195,7 @@ class App:
             
             #! Mostrar datos finales
             texts = [
+                "Resultados finales de la simulacion:",
                 self.punto_1(),
                 self.punto_2(),
                 self.punto_3(),
@@ -210,7 +211,7 @@ class App:
             
             #! Capturar el fotograma para el video
             frame_surface = pygame.surfarray.array3d(screen)
-            # frames.append(frame_surface.swapaxes(0, 1))
+            frames.append(frame_surface.swapaxes(0, 1))
             
             #! Guardar frame
             pygame.display.flip()
@@ -253,4 +254,4 @@ class App:
         print("-"*15)
         self.punto_9B()
         print("-"*15)
-        self.punto_9C(velocidad=1000)
+        self.punto_9C(velocidad=2000)

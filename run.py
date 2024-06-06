@@ -58,13 +58,14 @@ def calentador_agua():
     a.main()
 
 
-def atencion_publico(num_boxes:int, tp8:bool = False):
+def atencion_publico( tp8:bool = False):
     """
     Función principal que ejecuta el TP de Atención al Público: Tp7 y Tp8
     """
     from Atencion_publico.App import App
     from Atencion_publico.clases.Modelo import Modelo
     
+    num_boxes = int(input("Ingrese la cantidad de boxes: "))
     modelo = Modelo(
         num_boxes=num_boxes,
     )
@@ -72,37 +73,74 @@ def atencion_publico(num_boxes:int, tp8:bool = False):
     a = App(modelo=modelo)
     a.main(tp8=tp8)
 
+
 def particulas():
     """
     Función principal que ejecuta el TP de Partículas: Tp9
     """
     from Particulas.App import App
+    
     a = App()
     a.main()
 
 
 if __name__ == '__main__':
-    # print("Calentador de Agua")
-    #T* Tp1 al Tp6
-    # print("Tp1 al Tp6")
-    # calentador_agua()
-    # print("+"*15,"\n")
+    try:
+        while True:
+            tp = int(input("Ingrese el TP a ejecutar (6, 7, 8, 9): "))
+            
+            if tp not in [6, 7, 8, 9]:
+                raise ValueError("El TP debe ser 6, 7, 8 o 9")
+            
+            #T* Tp1 al Tp6
+            if tp == 6:
+                print("\n\n+" + "-"*38 + "+")
+                print("+    Tp1 al Tp6: Calentador de Agua    +")
+                print("+" + "-"*38 + "+\n")
+                
+                calentador_agua()
+                
+                if input("\nTp1 al Tp6 finalizados.\n¿Desea continuar con otro TP? (s/n): ") != "s":
+                    break
+            
+            # T* Tp7
+            if tp == 7:
+                print("\n\n+" + "-"*32 + "+")
+                print("+    Tp7: Atención al público    +")
+                print("+    (Distribución uniforme)     +")
+                print("+" + "-"*32 + "+\n")
+                
+                atencion_publico()
+                
+                if input("\nTp7 finalizado.\n¿Desea continuar con otro TP? (s/n): ") != "s":
+                    break
+            
+            #T* Tp8
+            if tp == 8:
+                print("\n\n+" + "-"*32 + "+")
+                print("+    Tp8: Atención al público    +")
+                print("+    (Distribución normal)       +")
+                print("+" + "-"*32 + "+\n")
+                
+                atencion_publico(tp8=True)
+                
+                if input("\nTp8 finalizado.\n¿Desea continuar con otro TP? (s/n): ") != "s":
+                    break
+                
+            #T* Tp9
+            if tp == 9:
+                print("\n\n+" + "-"*23 + "+")
+                print("+    Tp9: Particulas    +")
+                print("+" + "-"*23 + "+\n")
+                
+                particulas()
+                
+                if input("\nTp9 finalizado.\n¿Desea continuar con otro TP? (s/n): ") != "s":
+                    break
     
-    
-    print("Atención al público")
-    # num_boxes:int = int(input("Ingrese la cantidad de boxes: "))
-    # T* Tp7
-    # print("Tp7")
-    # atencion_publico(num_boxes=num_boxes)
-    # print("+"*15,"\n")
-    
-    
-    #T* Tp8
-    # print("Tp8")
-    # atencion_publico(num_boxes=num_boxes, tp8=True)
-    # print("+"*15,"\n")
-    
-    
-    #T* Tp9
-    print("Tp9")
-    particulas()
+    except ValueError as e:
+        print("\n\n+" + "-"*42 + "+")
+        print("+    Error en la ejecución del programa    +")
+        print("+" + "-"*42 + "+\n")
+        print(e)
+        input("\n\nPresione Enter para salir...")
