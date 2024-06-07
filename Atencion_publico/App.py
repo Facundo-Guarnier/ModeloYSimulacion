@@ -232,7 +232,7 @@ class App:
         pygame.quit()
         
         #! Crear el video con MoviePy
-        print(f"\Procesando video 'Animacion_{self.modelo.num_boxes}-boxes.avi'. Aguarde un instante...")
+        print(f"\nProcesando video 'Animacion_{self.modelo.num_boxes}-boxes.avi'. Aguarde un instante...")
         clip = ImageSequenceClip(frame_filenames, fps=velocidad)
         clip.write_videofile(f"Animacion_{self.modelo.num_boxes}-boxes.avi", codec='mpeg4')
         

@@ -1,4 +1,7 @@
 
+import os
+
+
 def calentador_agua():
     """
     Función principal que ejecuta los TPs del Calentador de Agua: Tp1, Tp2, Tp3, Tp4, Tp5, Tp6
@@ -144,3 +147,5 @@ if __name__ == '__main__':
         print("+" + "-"*42 + "+\n")
         print(e)
         input("\n\nPresione Enter para salir...")
+    
+    os._exit(0)
