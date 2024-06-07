@@ -1,3 +1,5 @@
+import os
+import tempfile
 from matplotlib import pyplot as plt
 from Atencion_publico.clases.Modelo import Modelo
 
@@ -126,14 +128,19 @@ class App:
         
         pygame.init()
         
-        #! Lista para almacenar los fotogramas
-        frames = []
+        #! Fotogramas
+        frame_filenames = []
+        temp_folder = tempfile.mkdtemp()
         
         #! Configuraciones de la pantalla
         screen_width = 1200
         screen_height = 600
         screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption('Simulación de Atención al Público')
+        
+        #! Configuraciones de la pantalla reducida
+        reduced_resolution = (840, 420)
+        reduced_screen = pygame.Surface(reduced_resolution)
         
         #! Colores
         WHITE = (255, 255, 255)
@@ -209,9 +216,13 @@ class App:
                 text = font.render(t, True, BLACK)
                 screen.blit(text, (box_start_x, box_start_y + 75 + (i * 30)))
             
+            #! Redimensionar la pantalla a una resolución menor
+            pygame.transform.scale(screen, reduced_resolution, reduced_screen)
+            
             #! Capturar el fotograma para el video
-            frame_surface = pygame.surfarray.array3d(screen)
-            frames.append(frame_surface.swapaxes(0, 1))
+            frame_filename = os.path.join(temp_folder, f"frame_{frame}.png")
+            pygame.image.save(reduced_screen, frame_filename)
+            frame_filenames.append(frame_filename)
             
             #! Guardar frame
             pygame.display.flip()
@@ -221,8 +232,16 @@ class App:
         pygame.quit()
         
         #! Crear el video con MoviePy
-        clip = ImageSequenceClip(frames, fps=velocidad)
+        print(f"\Procesando video 'Animacion_{self.modelo.num_boxes}-boxes.avi'. Aguarde un instante...")
+        clip = ImageSequenceClip(frame_filenames, fps=velocidad)
         clip.write_videofile(f"Animacion_{self.modelo.num_boxes}-boxes.avi", codec='mpeg4')
+        
+        #! Eliminar los archivos de los fotogramas
+        for filename in frame_filenames:
+            os.remove(filename)
+        
+        #! Eliminar la carpeta temporal
+        os.rmdir(temp_folder)
     
     
     def main(self, tp8:bool) -> None:
